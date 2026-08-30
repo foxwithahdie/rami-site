@@ -1,8 +1,10 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  // Ramzey's own domain. Update if the host changes.
-  site: 'https://ramzeyburdette.com',
+  // Ramzey's own domain, registered 2026-08-30. This is what canonical URLs,
+  // the sitemap and any absolute link are built from, so it has to match the
+  // domain actually served or those all point somewhere that does not exist.
+  site: 'https://rambur.me',
 
   // Nothing is shipped to the browser. No islands, no client directives.
   build: { inlineStylesheets: 'never', format: 'directory' },
