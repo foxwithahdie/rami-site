@@ -86,6 +86,20 @@ const filters = [{ slug:'all', label:'ALL' }, ...groups.map(g => ({ slug:g.slug,
   #f-software:checked ~ .fs label[for="f-software"],
   #f-teaching:checked ~ .fs label[for="f-teaching"],
   #f-games:checked    ~ .fs label[for="f-games"] { background:var(--ink); color:var(--paper); }
+
+  /* The radios are .vh, so a focus ring on the input itself lands on a 1x1
+     clipped box and is invisible. A keyboard user could tab through the whole
+     filter with no idea where they were. Same `~` combinator the :checked
+     rules use, pointing at the visible label instead. */
+  #f-all:focus      ~ .fs label[for="f-all"],
+  #f-firmware:focus ~ .fs label[for="f-firmware"],
+  #f-digital:focus  ~ .fs label[for="f-digital"],
+  #f-shop:focus     ~ .fs label[for="f-shop"],
+  #f-software:focus ~ .fs label[for="f-software"],
+  #f-teaching:focus ~ .fs label[for="f-teaching"],
+  #f-games:focus    ~ .fs label[for="f-games"] {
+    outline:7px solid var(--accent); outline-offset:2px;
+  }
   .fs { margin-bottom:30px; }
 
   .group + .group { margin-top:38px; }
@@ -108,6 +122,26 @@ const filters = [{ slug:'all', label:'ALL' }, ...groups.map(g => ({ slug:g.slug,
   .e-open  { display:block; margin-top:14px; color:var(--accent); }
   .is-cv { border-style:dashed; opacity:.85; }
   .is-cv .e-open { color:var(--accent); opacity:1; }
+
+  /* Hover only on rows that actually go somewhere. The selector is `a.entry`,
+     so it can never reach the COMING SOON! and ON THE CV rows: those render as
+     a <div>, not a link, and a hover on something unclickable is a lie.
+     At rest a row is border-only per the Figma, so the hard shadow arriving is
+     the whole move, plus the small lift the cards use. 9px of shadow and 3px of
+     lift sit inside the 16px row gap, so neighbours never collide.
+     :focus not :focus-visible, which is past the 2017 floor. */
+  a.entry {
+    transition:transform var(--dur) var(--ease),
+               border-color var(--dur) var(--ease),
+               box-shadow var(--dur) var(--ease);
+  }
+  a.entry:hover, a.entry:focus {
+    transform:translateY(-3px);
+    border-color:var(--accent);
+    box-shadow:var(--shadow-x) var(--shadow-x) 0 var(--ink);
+  }
+  a.entry .e-open { transition:transform var(--dur) var(--ease); }
+  a.entry:hover .e-open, a.entry:focus .e-open { transform:translateX(6px); }
 
   /* Filtering. Hidden groups are display:none, which cannot be transitioned,
      but an ANIMATION does run when an element goes from display:none to

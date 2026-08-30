@@ -2,15 +2,25 @@
 // Present on every page, and the target of the CONTACT link in the nav.
 // Chrome colours only, never the page theme.
 //
-// TWO THINGS ARE PLACEHOLDERS AND NEED RAMZEY:
-//   1. CONTACT_EMAIL   - the address to publish. Deliberately not guessed.
-//   2. FORM_ENDPOINT   - a no-JS form post needs somewhere to post to.
-//                        Until it is set, the form is hidden and the mailto
-//                        link is the whole contact path, which works in every
-//                        browser ever made.
+// FORM_ENDPOINT is the one thing still unset. A no-JS form post needs somewhere
+// to post to; until it has one the form stays hidden and the mailto link is the
+// whole contact path, which works in every browser ever made.
 import Icon from './Icon.astro';
 
-const CONTACT_EMAIL = null;  // e.g. 'hello@example.com'
+// Published deliberately. Ramzey gave this address for the site, 2026-08-30.
+//
+// It is ALSO on the deny list in scripts/build-cv.py, and that is not a
+// contradiction. That list guards the GENERATED CV data, where the whole
+// contact line is stripped because it carries her phone number alongside the
+// address. This file is hand written and one line of it being public is her
+// call, which she made. Do NOT loosen the deny list to match: the phone number
+// still must never ship, and cv.json is a different path entirely.
+//
+// Plain text, not obfuscated. Every no-JS way to hide an address from
+// harvesters -- reversed CSS, an image, entity soup -- breaks copy-paste or a
+// screen reader, and this site does not trade accessibility for a defence that
+// modern scrapers walk straight through.
+const CONTACT_EMAIL = 'ramzey.burdette2005@gmail.com';
 const FORM_ENDPOINT = null;  // e.g. 'https://formspree.io/f/xxxxxxx'
 
 const boxes = [
