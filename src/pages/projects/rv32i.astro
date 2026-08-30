@@ -53,10 +53,6 @@ memory_data · data_write · data_write_done · register_write_done`} />
     <p class="t-body">It reproduced identically whether the logic was combinational or sequential, which ruled out a whole class of causes. Control got restructured around an explicit <code>pc_enable</code> output and a <code>fetch_done</code> flag, with branches and jumps gated separately.</p>
   </Section>
 
-  <Media needed="pc_enable going high twice across an AUIPC"
-         caption="the AUIPC double fire"
-         copy="The waveform that shows it. Ramzey has ten GTKWave captures from this processor; the one that shows pc_enable going high twice has not been identified yet."
-         ratio="ratio-16x9" />
 
   <Section label="THE SHIFT BUG">
     <p class="t-body">Two faults stacked. Arithmetic right shift behaved as a logical shift, and <code>shift_amount</code> was being driven from two places at once.</p>
