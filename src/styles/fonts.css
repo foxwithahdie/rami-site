@@ -1,0 +1,21 @@
+/* Self-hosted, so the site makes no third-party requests and keeps working
+   behind a blocker or offline.
+
+   These are STATIC instances cut from Google's variable files with fontTools.
+   Google serves one variable file for every weight of Archivo and JetBrains
+   Mono, and variable fonts need Firefox 62 / Edge 17. Instancing gives real
+   400 / 600 / 900 files that work back to the woff2 floor (Edge 14, Safari 10,
+   Firefox 39), which is inside our 2017 target.
+
+   font-display:swap means text is readable in a fallback face immediately and
+   never invisible while a font loads. */
+
+@font-face { font-family:Archivo; font-style:normal; font-weight:400; font-display:swap; src:url(/fonts/archivo-400.woff2) format("woff2"); }
+@font-face { font-family:Archivo; font-style:normal; font-weight:600; font-display:swap; src:url(/fonts/archivo-600.woff2) format("woff2"); }
+@font-face { font-family:Archivo; font-style:normal; font-weight:900; font-display:swap; src:url(/fonts/archivo-900.woff2) format("woff2"); }
+
+@font-face { font-family:"JetBrains Mono"; font-style:normal; font-weight:400; font-display:swap; src:url(/fonts/jetbrainsmono-400.woff2) format("woff2"); }
+@font-face { font-family:"JetBrains Mono"; font-style:normal; font-weight:700; font-display:swap; src:url(/fonts/jetbrainsmono-700.woff2) format("woff2"); }
+
+@font-face { font-family:Caveat;     font-style:normal; font-weight:700; font-display:swap; src:url(/fonts/caveat-700.woff2) format("woff2"); }
+@font-face { font-family:Silkscreen; font-style:normal; font-weight:700; font-display:swap; src:url(/fonts/silkscreen-700.woff2) format("woff2"); }

@@ -1,0 +1,135 @@
+---
+// The nav is identical on every page. Chrome never inherits the page theme,
+// so everything here uses --chrome-*, never --paper/--ink/--accent.
+//
+// On mobile it is a <details> disclosure holding the same five links as the
+// desktop bar: WORK, ABOUT, CV, IBI, CONTACT. No script, and it works with
+// keyboard and screen readers because <details> already does.
+const { current } = Astro.props;
+
+const links = [
+  { label: 'WORK',    href: '/work/' },
+  { label: 'ABOUT',   href: '/about/' },
+  { label: 'CV',      href: '/cv/' },
+  { label: 'IBI',     href: 'https://www.ideasbecomeimpact.org', external: true },
+  { label: 'CONTACT', href: '#contact' },
+];
+---
+
+<nav class="nav" aria-label="Main">
+  <div class="nav-inner wrap">
+    <a class="wordmark" href="/">rami</a>
+
+    <!-- Desktop: a plain list. Mobile: the same list inside a disclosure. -->
+    <ul class="nav-links">
+      {links.map((l) => (
+        <li>
+          <a
+            href={l.href}
+            class={l.label === 'IBI' ? 'is-accent' : undefined}
+            aria-current={current === l.label ? 'page' : undefined}
+            {...(l.external ? { target: '_blank', rel: 'noopener' } : {})}
+          >{l.label}</a>
+        </li>
+      ))}
+    </ul>
+
+    <details class="nav-menu">
+      <summary aria-label="Menu"><span class="bars" aria-hidden="true"></span></summary>
+      <ul>
+        {links.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              class={l.label === 'IBI' ? 'is-accent' : undefined}
+              aria-current={current === l.label ? 'page' : undefined}
+              {...(l.external ? { target: '_blank', rel: 'noopener' } : {})}
+            >{l.label}</a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: relative;   /* anchor for the open menu */
+    background: var(--chrome-bg);
+    border-bottom: 8px solid var(--chrome-accent);
+  }
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+  .wordmark {
+    font-weight: 900;
+    font-size: 28px;
+    color: var(--chrome-fg);
+    text-decoration: none;
+  }
+
+  ul { list-style: none; margin: 0; padding: 0; }
+
+  .nav-links { display: none; }
+  .nav-links a,
+  .nav-menu a {
+    font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+    font-weight: 700;
+    letter-spacing: .08em;
+    color: var(--chrome-fg);
+    text-decoration: none;
+  }
+  .is-accent { color: var(--chrome-accent) !important; }
+  .nav-links a:hover, .nav-menu a:hover { text-decoration: underline; }
+
+  /* The hamburger. A <details> with a drawn <summary>, no icon font,
+     no inline SVG to maintain, and no script. */
+  .nav-menu > summary {
+    list-style: none;
+    cursor: pointer;
+    display: block;
+    width: 30px; height: 20px;
+    position: relative;
+  }
+  .nav-menu > summary::-webkit-details-marker { display: none; }
+  .bars, .bars::before, .bars::after {
+    position: absolute; left: 0; right: 0; height: 4px;
+    background: var(--chrome-fg); content: "";
+  }
+  .bars { top: 8px; }
+  .bars::before { top: -8px; }
+  .bars::after  { top:  8px; }
+
+  /* The open list drops full width below the bar and overlays the page,
+     rather than hanging off the right under the hamburger. position:absolute
+     and z-index are both well inside the 2017 floor. */
+  .nav-menu > ul {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    background: var(--chrome-bg);
+    border-bottom: 8px solid var(--chrome-accent);
+    padding: 20px var(--page-margin) 26px;
+  }
+  .nav-menu > ul > li + li { margin-top: 16px; }
+  .nav-menu a { display: block; font-size: 15px; }
+
+  /* From the desktop breakpoint the links are always visible and the
+     disclosure is gone entirely. */
+  @media (min-width: 64em) {
+    .nav-inner { padding-top: 34px; padding-bottom: 34px; }
+    .wordmark { font-size: 42px; }
+    .nav-menu { display: none; }
+    .nav-links { display: flex; flex-wrap: wrap; }
+    .nav-links > li + li { margin-left: 44px; }
+    .nav-links a { font-size: 18px; }
+  }
+  /* No @supports and no gap anywhere: margins do the spacing on every
+     browser, which is one behaviour to reason about instead of two. */
+</style>

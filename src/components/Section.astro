@@ -1,0 +1,22 @@
+---
+// A labelled section: mono label in the left gutter on desktop, stacked on
+// mobile. This is the page's basic rhythm unit.
+const { label } = Astro.props;
+---
+<section class="sec wrap">
+  {label && <h2 class="t-label sec-label">{label}</h2>}
+  <div class="sec-body"><slot /></div>
+</section>
+
+<style>
+  .sec { padding-top:28px; padding-bottom:8px; }
+  .sec-label { color:var(--accent); margin:0 0 14px; }
+  .sec-body > :global(* + *) { margin-top:22px; }
+  .sec-body :global(p) { margin:0; }
+  @media (min-width:64em) {
+    .sec { padding-top:56px; padding-bottom:10px; display:grid; grid-template-columns:230px 1fr; grid-column-gap:64px; align-items:start; }
+    .sec-label { margin:8px 0 0; }
+    .sec-body { max-width:1466px; }
+    .sec-body > :global(* + *) { margin-top:30px; }
+  }
+</style>

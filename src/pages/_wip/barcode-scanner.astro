@@ -1,0 +1,132 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Section from '../../components/Section.astro';
+import Code from '../../components/Code.astro';
+import Media from '../../components/Media.astro';
+---
+<Base title="The Shop Barcode Scanner — rami" theme="shop-dark" current="WORK"
+      description="A tool checkout terminal for the Olin Shop. Python, Quart and asyncio on a Raspberry Pi.">
+  <p class="crumb wrap"><a class="t-label" href="/experience/olin-shop/">← OLIN SHOP</a></p>
+
+  <Hero facet="SOFTWARE" year="2026 — now" title="The Shop Barcode Scanner"
+        lead="Every tool in the shop, checked in and out, so nobody has to remember who took the good calipers."
+        tags="Python  ·  Quart  ·  asyncio  ·  Power Automate  ·  Raspberry Pi"
+        repo="https://github.com/olin-shop" />
+
+  <Section label="WHAT IT IS">
+    <p>A terminal that lives in the shop. Scan a barcode, take a tool, scan it back when you return it. It knows who has what, and emails people about the things they have forgotten.</p>
+  </Section>
+
+  <Section label="MY PART">
+    <p>A real split. I own the backend and the Power Automate side. Tierra Raiti owns the interface.</p>
+  </Section>
+
+  <Section label="THE CONCURRENCY BUG">
+    <p class="t-body">Several people scan at once. That is the whole problem.</p>
+
+    <!-- Four scans in flight. Each row travels at its own rate and lands on
+         its own answer, which is the point the paragraph below makes. Pure
+         @keyframes, no script. -->
+    <ol class="scans" aria-hidden="true">
+      {['a41f','9c02','17be','6d38'].map((id, i) => (
+        <li class="scan" style={`--d:${i * 0.55}s`}>
+          <span class="t-mono scan-id">{id}</span>
+          <span class="scan-track"><span class="scan-pip"></span></span>
+          <span class="t-mono scan-out">{id}</span>
+        </li>
+      ))}
+    </ol>
+    <p class="t-body">Each scan generates a UUID and an asyncio Future, posts to a webhook, and waits. When the response comes back it gets matched to its request by id, and only then does that one Future resolve. So four people scanning at the same time each get their own answer.</p>
+    <Code code={`request_id = uuid4()
+future = loop.create_future()
+pending[request_id] = future
+await post_to_webhook(request_id, payload)
+result = await future        # resolves when *this* id comes back`} />
+    <p class="t-body">Getting there meant migrating the whole thing from synchronous to async, and then finding the reason it still broke: a singleton storage layer was collapsing simultaneous requests into shared state, so two people scanning together could get each other’s result.</p>
+  </Section>
+
+  <Media needed="the terminal running in the shop" ratio="ratio-3x2"
+         caption="the terminal in the shop"
+         copy="The terminal as it sits in the shop. Scan a tool out, scan it back in when you are done with it." />
+
+  <Section label="THE DECISION I'D DEFEND">
+    <p class="t-body">The system of record is Power Automate and an Excel sheet.</p>
+    <p class="t-body">It is not the elegant choice. It is the one the shop staff can maintain themselves, for years, after I graduate, without ever opening a code editor. A tool nobody can fix is a tool that dies the summer everyone leaves.</p>
+    <p class="t-note">the same reason the blocks talk to the robots</p>
+  </Section>
+
+  <Section label="THE REST OF IT">
+    <ul class="list">
+      <li class="t-item">API key infrastructure with rotation</li>
+      <li class="t-item">Local caching, to stop hammering the webhook for things it already knows</li>
+      <li class="t-item">Automated email reminders for outstanding items</li>
+      <li class="t-item">ARM64 support, because it runs on a Raspberry Pi in the shop</li>
+      <li class="t-item">Tests across backend, email, interface and integration, running in CI</li>
+    </ul>
+  </Section>
+
+  <Media flip needed="the Pi, or someone scanning a tool" ratio="ratio-3x2"
+         caption="someone scanning a tool"
+         copy="Four people can scan at the same moment and each one gets their own answer back." />
+
+  <Section label="WHERE IT IS NOW">
+    <p class="t-body">Approaching deployment as of August 2026. The next real test is a semester of students using it without being told how.</p>
+  </Section>
+
+  <nav class="backup wrap">
+    <a class="backup-link" href="/experience/olin-shop/">
+      <span class="t-label backup-dir">← BACK UP</span>
+      <span class="t-label backup-facet">IN THE SHOP</span>
+      <span class="t-card backup-title">Olin Shop</span>
+      <span class="t-item">Where this lives, and everything else I do there.</span>
+    </a>
+  </nav>
+</Base>
+
+<style>
+  .scans { list-style:none; margin:26px 0; padding:0; }
+  .scan { display:flex; align-items:center; }
+  .scan + .scan { margin-top:12px; }
+  .scan-id, .scan-out { flex:0 0 auto; opacity:.75; }
+  .scan-out { color:var(--accent); }
+  .scan-track {
+    position:relative; flex:1 1 auto; height:3px; margin:0 14px;
+    background:var(--ink); opacity:.28;
+  }
+  .scan-pip {
+    position:absolute; top:-5px; left:0; width:13px; height:13px;
+    background:var(--accent);
+    animation:scan-fly 3.2s var(--d) cubic-bezier(.4,0,.2,1) infinite;
+  }
+  @keyframes scan-fly {
+    0%        { left:0;    opacity:0; }
+    8%        { opacity:1; }
+    55%, 100% { left:100%; opacity:1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scan-pip { animation:none; left:100%; }
+  }
+
+  .crumb { padding-top:22px; }
+  .crumb a { color:var(--accent); text-decoration:none; }
+  .list { list-style:none; margin:0; padding:0; }
+  .list > li { position:relative; padding-left:30px; }
+  .list > li + li { margin-top:14px; }
+  .list > li::before {
+    content:""; position:absolute; left:0; top:.62em;
+    width:14px; height:4px; background:var(--accent);
+  }
+  .backup { padding-top:44px; padding-bottom:44px; }
+  .backup-link {
+    display:block; padding:22px; text-decoration:none; color:var(--ink);
+    border:var(--outline) solid var(--ink);
+    box-shadow:var(--shadow-x) var(--shadow-x) 0 var(--ink);
+  }
+  .backup-link { transition:box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .backup-link:hover { box-shadow:2px 2px 0 var(--ink); transform:translate(4px,4px); }
+  .backup-dir { display:block; color:var(--accent); }
+  .backup-facet { display:block; margin-top:14px; opacity:.7; }
+  .backup-title { display:block; margin-top:6px; }
+  @media (min-width:64em) { .backup { padding-top:90px; padding-bottom:90px; } .backup-link { padding:34px; } }
+</style>

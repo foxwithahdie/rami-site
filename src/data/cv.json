@@ -1,0 +1,263 @@
+[
+ {
+  "title": "Summary",
+  "intro": [
+   "Electrical and computer engineering undergraduate writing firmware on real hardware (ESP32-S3, STM32G4, RP2040) for devices people actually depend on. Comfortable taking a board from KiCad schematic through SMT assembly to bring-up and firmware, and comfortable a layer below that: built a single-cycle RV32I RISC-V processor in SystemVerilog from the ISA specification. Works across code and fabrication rather than choosing one."
+  ],
+  "entries": []
+ },
+ {
+  "title": "Education",
+  "intro": [
+   "**Olin College of Engineering**, Needham, MA Bachelor of Science, Electrical and Computer Engineering · Expected May 2028 GPA: 3.6",
+   "**Relevant coursework:** Computer Architecture · Software Systems",
+   "**Current semester (Fall 2026):** Eclectronics · Embedded Software"
+  ],
+  "entries": []
+ },
+ {
+  "title": "Publications",
+  "intro": [
+   "Bhatia, P., **Burdette, R.**, Oshinowo, T., Jarvie-Eggart, M., and Matsumoto, S. \"Understanding Software Engineering Practices and Tools in Undergraduate Mechanical Engineering Students.\" In *Proceedings of the 57th ACM Technical Symposium on Computer Science Education V.1* (SIGCSE TS 2026), pp. 127-133. February 17, 2026. DOI: 10.1145/3770762.3772667"
+  ],
+  "entries": []
+ },
+ {
+  "title": "Experience",
+  "intro": [],
+  "entries": [
+   {
+    "org": "OAT Lab (Olin Assistive Technology), Olin College of Engineering, Needham, MA",
+    "meta": "**Firmware Lead** · September 2025 to present",
+    "bullets": [
+     "Building a PCB main board from scratch for the device",
+     "Writing C++ firmware for an ESP32-S3 that converts Braille Ready Format (`.brf`) files into actuated braille cells, across a planned 8 jumbo cells driven by electromagnets pushing a cam mechanism",
+     "Handling SD-card local storage, USB data ingest, battery management, and braille cell actuation concurrently on one microcontroller",
+     "Wrote the shift register driver, bit-banged over serial data, shift clock, register clock, and output enable, latching the register once all bits are pushed. The full path runs end to end: mount the card, read the `.brf`, unmount, configure the register, push the cells",
+     "Migrated the codebase from C to C++, replacing `#define` pin macros with `constexpr gpio_num_t`, bare 1/0 levels with a typed enum, and the free functions with a `ShiftRegister` class",
+     "Drew the shift register logic schematic and a logic board prototype in KiCad, through to fabrication-ready gerbers",
+     "At schematic and component-testing stage as of August 2026",
+     "Lead a 4-person firmware subteam: set individual member goals and deadlines, run weekly subteam meetings and 1:1s, and prepare the team for periodic design reviews",
+     "Run SMT soldering practice sessions for the subteam",
+     "Part of the lab's leadership coordination team, working on succession planning, member recruitment, and onboarding structure for the following year",
+     "Team conducted extensive user research with the Carroll Center for the Blind and Perkins School for the Blind"
+    ],
+    "summary": "Low-cost braille e-reader. Commercial braille displays run into the thousands of dollars, which prices out most of the people who need them."
+   },
+   {
+    "org": "MagFit Prosthetics, Olin College of Engineering, Needham, MA",
+    "meta": "**Firmware Lead** · June 2026 to present",
+    "bullets": [
+     "Selected the STM32G474CET6 for the final board, chosen because ST's tooling supports training and running ML models on low-power hardware, which keeps all-day battery life viable for someone wearing the device. Development currently targets an STM32L432KC while the final board is in design",
+     "Built a C++ working environment over STM32 HAL-level code for the team",
+     "Designed the firmware around interrupt-driven scheduling with a hard non-blocking rule: every function except initialization must not block, so no subsystem stalls waiting on another",
+     "Implemented force-sensing-resistor handling and scaffolded the remaining subsystems (battery management, Bluetooth, PID control, motor control) plus the communication-standard layer between them",
+     "Wrote a non-blocking printing and logging API when no suitable option existed: formatted output goes into a FreeRTOS stream buffer under a mutex and a background task drains it over UART in interrupt mode",
+     "Built the system on FreeRTOS under CMSIS-RTOS v2, with named tasks, mutexes guarding I2C, ADC and printing, stream buffers, and task notifications for I2C transaction completion",
+     "Converted the device over to USB CDC for host communication",
+     "Wrote an interactive serial console over USB for bring-up, with single-key commands to energize and release the electropermanent magnet, trigger vibration, stop, and print help",
+     "Shipped a general-purpose PID loop as its own reusable module",
+     "Structured the codebase to separate interrupts from device files (I2C vs BMS) and keep hardware abstraction layered, with GPIO bindings attachable to specific functions",
+     "Specified and built the firmware for the concentric cylinder rig used to characterize the MRF: a Raspberry Pi Pico driving a 50:1 geared DC motor through an L298N, with two INA228 current sensors, an ADS1115 for analog torque and Hall-sensor reads, and a digipot setting the buck converter's coil current",
+     "Implemented a closed-loop speed controller that adjusts PWM duty to hold motor speed constant as the fluid stiffens, plus a current loop that trims the digipot until measured coil current hits setpoint, logging torque, both branch currents, speed, and magnetic field together per setpoint over USB",
+     "Identified and resolved mixed-signal integration issues: ADC ceiling mismatch (5 V Hall sensor into a 3.3 V Pico pin), encoder logic level, and star grounding to keep high-current motor and coil returns off the analog and logic ground",
+     "Two-person firmware repo, roughly an even split of commits with the electrical lead",
+     "As of August 2026 the firmware runs ahead of the hardware. The STM32 board is not yet fabricated; testing is against a breadboard signal board"
+    ],
+    "summary": "Adjustable prosthetic socket using magnetorheological fluid (MRF) and electropermanent magnets to conform to a residual limb as it changes volume. Student project working toward becoming a startup."
+   },
+   {
+    "org": "Olin Shop, Olin College of Engineering, Needham, MA",
+    "meta": "**Shop Assistant** · February 2025 to present  ·  **Summer Fellow** · June 2026 to August 2026",
+    "bullets": [
+     "Ran 75 training sessions: 55 Prusa FDM and 20 soldering",
+     "Deliver three scheduled trainings for the Olin community: intro shop training, Prusa FDM, and soldering",
+     "Teach TPU one to one rather than as a scheduled session, working through advanced slicer settings on a student's own print",
+     "Operate and maintain a 29 machine campus FDM fleet: 8 Prusa MK3S+, 8 Mini, 7 MK4S and 6 Core ONE, covering preventative maintenance and the recurring failure points, notably belt tensioning and thermistor replacement",
+     "Run the Stratasys F123 series (F170, F190, F370) in a separate room of the same shop: printing, fulfilling student work orders, and basic service. The Stratasys training itself is delivered by someone else",
+     "Run and slice on the shop's two Formlabs SLA printers, a Form 3+ and a Form 3B+, alongside the FDM fleet",
+     "Act as an informal go-to in the shop for safe practice and for the 3D printing space, without formal supervisory authority",
+     "Mentor newer shop assistants, teaching them to deliver the 3D printing trainings and maintain the machines themselves",
+     "Design how shop spaces are used, including signage and visual language placed so it reminds people of training procedures at the point of use",
+     "The Prusa training covers PLA and PETG, plus slicing, supports and the shop's printing culture; the Stratasys training, which covers the remaining materials, is delivered by someone else",
+     "Collaborated with the assistant team to develop and deliver shop trainings to the Olin community",
+     "As Summer Fellow: ideated and managed team tasks for shop improvement, did the hands-on labor, and ran outreach sharing how Olin operates its academic makerspace with people outside the college",
+     "Part of the team that converted Room 303 from the electronics stockroom into the Electronics Engineering Lab (EEL), fit for advanced surface-mount soldering and power electronics analysis, covering layout, design and physical implementation. Consulted the provost and two ECE faculty on how to balance a workspace against a stockroom, then extended the design into the hallway with analysis benches and centralised student storage, keeping ventilated work inside the room",
+     "Led the Electronics Prototyping deep dive at the shop's first Makerspace Institute (July 2026), hosting participants from 12 higher education institutions worldwide through electronics orientation, soldering training, and an Arduino spotlight build, and discussing how those skills integrate into courses like PIE",
+     "Wrote `Spotlight.h`, the 255-line Arduino teaching library that session was built on: a non-blocking `update()` engine with plain-language commands (`set_pan`, `tilt_bounce`, `setRGB`) that hide servo timing and PWM so a beginner issues a command instead of computing a pulse width. Servos park after half a second of holding position because cheap servos buzz",
+     "Designed the 150-minute session itself: a 17-slide deck budgeted to the minute with talk and question time separated, teaching LEDs on pre-wired pins so students see four behaviours before writing a line of code, then servos, then 40 minutes of soldering from breadboard to perfboard",
+     "Cut the custom brass stamp for the Makerspace Institute logo on a Tormach 770M, used with a hot foil press to print notebooks during the event",
+     "Built the Arduino pan-tilt spotlight used as the hands-on build in that workshop (`olin-shop/pan-tilt-spotlight`, C++), and wrote the accompanying electronics workshop slides deck"
+    ],
+    "summary": ""
+   },
+   {
+    "org": "Course Assistant, Olin College of Engineering, Needham, MA",
+    "meta": "**Software Systems** (Fall 2025) · **Software Design** (Spring 2026) ·  **Principles of Integrated Engineering** (Fall 2026)",
+    "bullets": [
+     "Course assistant for **Software Systems** (30 students), Olin's C and operating-systems course, supporting students through systems programming, memory management, and OS-level concepts. Took the course in Spring 2025 and returned to teach it the following semester",
+     "Recognised a large exam-grading backlog in Software Systems and persuaded the instructor to bring course assistants into exam grading. Turnaround on graded work improved substantially afterwards",
+     "Helped develop the official solution sets issued to students for homework problems",
+     "Course assistant for **Software Design** (80 students), an introductory programming course covering fundamentals and basic software engineering practice. Gave feedback, graded submissions, and acted as a liaison between faculty and students",
+     "Course assistant for Principles of Integrated Engineering (PIE), an interdisciplinary engineering course centered on communicating across disciplines. Hired specifically for the ability to support students across software, electrical and fabrication work"
+    ],
+    "summary": ""
+   },
+   {
+    "org": "Software Engineering Practices and Tools Research, Olin College of Engineering",
+    "meta": "**Student Researcher** · January 2025 to March 2026",
+    "bullets": [
+     "Interviewed mechanical engineers on their use of software engineering practices and tools (SEPTs) to understand where their usage patterns originate",
+     "Gathered data across 10 to 15 interviews on SEPT usage and perceived importance relative to industry norms",
+     "Found that curriculum has the largest effect on an engineer's ability to use SEPTs and on their perception of their value",
+     "Performed interview coding and analysis on the qualitative data set",
+     "Named co-author on the resulting SIGCSE TS 2026 paper (see Publications)"
+    ],
+    "summary": ""
+   },
+   {
+    "org": "Ideas Become Impact, Needham, MA",
+    "meta": "**Co-Founder** · July 2025 to present",
+    "bullets": [
+     "Carried academic credit at Olin as a graded independent study, \"Independent Study and Research: Ideas Become Impact, Waltham Boys and Girls Club Chapter\" (Spring 2026)",
+     "Own the technical and logistical work of getting physical hardware into students' hands, and lead the in-person build experiences with them",
+     "Wrote the entire `scratch-robots` MATLAB tool (github.com/ideas-become-impact/scratch-robots), a Scratch-style block programming interface that connects to Neato robots so students can program robot behavior before they know how to write code. Full block palette covering motion, repeat, if/else, boolean operators and comparisons, resolving down to MATLAB that drives the robot over UDP",
+     "Built the `heartbeat-workshop` live ML demo with two teammates (github.com/ideas-become-impact/heartbeat-workshop): a Flask application that reads a participant's pulse, trains on it, and predicts from it in real time, with live plotting in the browser. Owned project setup, the interface, the plotting, and the training code. 16 of 37 commits",
+     "Hosted community table events demonstrating live ML predictions from participants' heartbeats and between common objects",
+     "Organization has run workshops in Waltham, Boston and Brockton, plus Seattle and Bellevue, and online internationally, across schools, libraries, clubs and community settings, and launched its first pilot chapter at the Waltham Boys and Girls Club, where middle schoolers built projects including a health monitoring app"
+    ],
+    "summary": "Nonprofit teaching machine learning and AI literacy to middle and high school students, and how they can use it to impact the world. Team of 3 with shared roles."
+   },
+   {
+    "org": "MIT Data Activism, MIT Media Lab, Cambridge, MA",
+    "meta": "**Data Activist** · July 2024 to August 2024",
+    "bullets": [
+     "Collected data through 100+ surveys and 20 interviews in the local community",
+     "Worked with a student research team to express the community's experience through data and art",
+     "Documented increased surveillance of students across 4 local schools and its effect on their privacy and safety",
+     "Findings written up in an internal report, not publicly released"
+    ],
+    "summary": ""
+   },
+   {
+    "org": "Innovators for Purpose, Cambridge, MA",
+    "meta": "**Web Developer, Intern** · January 2023 to May 2024",
+    "bullets": [
+     "Built the carousel, About Geniuses page, footer, and navbar for the Genius project site, plus image and styling work across it, and reviewed and merged other contributors' pull requests",
+     "Co-created a Next.js rewrite converting the original static pages into reusable React components",
+     "Contributed to AI Adventure, an Express and EJS quiz application backed by SQLite: built the quiz page and its animations, matched the front page to the Figma design, wrote the scroll behavior, and fixed a bug preventing user data from saving (27 of 123 commits)",
+     "Hosted fireside chats with guests including Raechel Walker and Marlyse Reeves of MIT",
+     "Hosted large events including annual summits, bringing AI awareness to 2 local school districts"
+    ],
+    "summary": "Nonprofit built around design justice, focused on serving people who have been underserved by technology."
+   },
+   {
+    "org": "SmartBear",
+    "meta": "**Service Desk Intern** · July to August 2022 · September to December 2022 ·",
+    "bullets": [
+     "Invited back for three terms across two years after the initial summer",
+     "Supported an entire office in person plus remote staff through Jira ticketing",
+     "Handled hardware, software installation, networking and ethernet faults, OS-level issues, and device management",
+     "Set up and configured new devices, and ran employee onboarding and offboarding",
+     "Worked directly with staff to diagnose and resolve submitted tickets",
+     "Part of the IT team response to a site-wide ethernet outage",
+     "Helped bring a newly opened section of the building online",
+     "Team of 4 on site, 7 including remote members"
+    ],
+    "summary": "July to August 2023 IT support at a software company building developer testing tools. Paid, 40 hours a week over the summers and 8 hours a week during the school year."
+   }
+  ]
+ },
+ {
+  "title": "Projects",
+  "intro": [],
+  "entries": [
+   {
+    "org": "RV32I RISC-V Processor, SystemVerilog",
+    "meta": "*Fall 2025, Computer Architecture* · github.com/foxwithahdie/rv32i-riscv-processor",
+    "bullets": [
+     "Implemented a single-cycle RV32I RISC-V processor in SystemVerilog, working from the ISA specification",
+     "Mapped 29 instructions to digital circuit design concepts: decode, register file, ALU operations, branching, and memory access",
+     "Diagnosed a structural hazard where PC-relative instructions (AUIPC, JAL, JALR, branches) executed twice, because the program counter advanced ahead of the instruction register. Confirmed it reproduced identically whether the logic was combinational or sequential, which ruled out a class of causes, then restructured control around an explicit `pc_enable` output and a `fetch_done` handshake",
+     "Debugged a shift-instruction failure down to two stacked faults: a missing signed cast, so arithmetic right shift behaved as a logical shift, compounded by `shift_amount` being driven from two places at once. Moved the shift amount out of the ALU top level and passed it in from decode",
+     "Wrote the branch unit implementing all six RV32I branch comparisons with explicit signed and unsigned paths, and corrected inconsistent signed casting in the arithmetic unit",
+     "Handled byte, halfword, and word load and store sizing",
+     "Wrote a custom testbench plus assembly and machine-code test programs, and confirmed correct processor state per instruction through waveform analysis in GTKWave",
+     "Built a waveform debugging setup that groups signals into four colour-coded sets viewed together: the clock and program counter, the decoded fields (`opcode`, `rs1`, `rs2`, `rd`, `funct3`, `funct7`), the immediates alongside the ALU result, and the memory and write-done signals. Watching decode, immediates and memory side by side is how the PC hazard surfaced",
+     "Removed magic numbers across the design, templated the module pipeline in `top`, and gave every module a defined initial state",
+     "Built the simulation toolchain on the OSS-CAD Suite, driven by Make",
+     "**Verified in simulation**, not deployed to hardware. 4-person team, 32 of 66 commits",
+     "An `rv32m` branch extends the design toward the RISC-V M extension. Integer division works; multiply was not yet functional as of August 2026"
+    ],
+    "summary": ""
+   },
+   {
+    "org": "Myo-Amp, Post-Stroke Grasp Assist Device",
+    "meta": "*Fall 2025* · **Firmware and Integration Lead** · github.com/olincollege/myo-amp",
+    "bullets": [
+     "Co-created a rehabilitation device offering three distinct grips for people with limited hand mobility, reading muscle intent through sEMG sensor pads and actuating the user's fingers to grasp everyday objects",
+     "Owned the firmware on a Raspberry Pi Pico that tied the full signal chain together: sEMG acquisition, handoff to the team's ML grip classifier, PWM generation, and motor-driver output to cable-driven linear actuators",
+     "Collaborated with 2 local communities and nonprofits to fit the needs of stroke survivors",
+     "**Outcome:** the prototype underperformed. The selected motor driver could not supply two linear actuators simultaneously and failed under load during testing, and long sensor lead times compressed the integration schedule. Partial hardware workarounds kept the build moving, but reliability was compromised. Root cause was a driver current-budget error identified too late to re-spec"
+    ],
+    "summary": "Project site: olincollege.github.io/pie-2025-03/myoamp · 5-person team"
+   },
+   {
+    "org": "Olin Shop Barcode Scanner",
+    "meta": "*June 2026 to present* · **Backend Lead** · github.com/olin-shop/barcode-scanner",
+    "bullets": [
+     "Terminal application for the Olin Shop that checks tools and equipment in and out, tracking who borrowed what and when, current item status, and return state, with automated email reminders to borrowers. Covers roughly 150 items in circulation across up to 400 users",
+     "Built the asynchronous backend from the ground up in Python and Quart: each scan generates a UUID request ID and an `asyncio` Future, POSTs to a Power Automate webhook, and resumes when the response is matched back by request ID, so several people can scan simultaneously and every request still resolves to its own correct response",
+     "Migrated the system from synchronous to async, then diagnosed and fixed a concurrent-flows bug by deprecating a singleton storage layer that was collapsing simultaneous requests into shared state",
+     "Designed API key infrastructure with key rotation for credential security",
+     "Added local caching to cut redundant webhook round-trips",
+     "Implemented the automated email notification system reminding borrowers of outstanding items and their status",
+     "Chose Power Automate plus Excel as the system of record deliberately, so shop staff can maintain it long-term without debugging code",
+     "Two-person build with a clean split: backend and Power Automate integration owned by me, the interface owned by Tierra Raiti",
+     "Test coverage across backend, email, interface and integration, running in CI",
+     "Established codebase conventions adopted by the team: mandatory type hints, docstrings explaining reasoning, global state isolated to a single module, string enums over string literals, and staged deprecate-then-delete cleanup",
+     "Solved ARM64 compatibility for Raspberry Pi. 38 of 86 commits; approaching deployment as of August 2026"
+    ],
+    "summary": ""
+   },
+   {
+    "org": "VoiceXP, Raspberry Pi Voice Assistant",
+    "meta": "*2023 to 2024, Innovators for Purpose* · sole author, 18 of 18 commits",
+    "bullets": [
+     "Voice-controlled chatbot running on a Raspberry Pi, in Python: speech recognition, text to speech, a keyword management layer, and voice calibration",
+     "Moved the recognition backend off pocket-sphinx and spent most of the effort on microphone behavior and background noise rejection in real rooms",
+     "Packaged for macOS, Linux, and Windows with `setup.py` and an install script, and resolved ARM build issues that only appeared on the Pi itself",
+     "Built on SpeechRecognition, pyttsx3, pyaudio, and the OpenAI API"
+    ],
+    "summary": ""
+   },
+   {
+    "org": "biplup-run, GBA Endless Runner",
+    "meta": "*Spring 2025, Software Systems* · github.com/olincollege/biplup-run",
+    "bullets": [
+     "Recreated Chrome's offline dinosaur game for Game Boy Advance hardware with a Pokémon theme, working within the constraints of a 16.8 MHz ARM7TDMI and no operating system",
+     "Designed an object-oriented structure for game objects on constrained hardware",
+     "Built on libtonc for direct GBA hardware access in C, retaining full hardware control without giving up ergonomics",
+     "Owned initial project setup and the Meson cross-compilation toolchain to a GBA ROM, using `arm-none-eabi-gcc` and ninja, targeting Windows, macOS, and Linux development hosts",
+     "Built the project's unit test framework. Meson does not cross-compile tests well, and the target has no stdout, so the tests ship as their own GBA ROM: each test returns 1 or 0, a per-file macro expands a whole file's tests into a comma-separated argument list, and the results render to the screen via `tte_write` to be read off the screen",
+     "Wrote 50 tests across input, kinematics, object utilities, system utilities and text",
+     "4-person team over roughly five weeks"
+    ],
+    "summary": ""
+   }
+  ]
+ },
+ {
+  "title": "Skills",
+  "intro": [
+   "**Programming Languages:** C, C++, Python, SystemVerilog, MATLAB, LaTeX *Familiar, limited recent practice:* Java, Kotlin",
+   "**Embedded and Hardware:** ESP32-S3 · STM32 (G4 and L4 series, HAL) · Raspberry Pi Pico and RP2040 · Arduino · GBA and ARM cross-compilation · FreeRTOS under CMSIS-RTOS v2 (tasks, mutexes, stream buffers, task notifications) · interrupt-driven, non-blocking firmware architecture · I2C, PWM, GPIO, UART, USB CDC, quadrature encoders · shift registers and bit-banged protocols · FSRs, Hall sensors, current sensing (INA228), external ADC (ADS1115), digipots · motor drivers (L298N) · battery management · board bring-up",
+   "**Digital Design:** RV32I RISC-V ISA implementation · SystemVerilog · GTKWave waveform debug · testbench development",
+   "**Electrical:** KiCad schematic capture and PCB layout · analog and digital circuit design · power distribution and regulation · star grounding and mixed-signal integration",
+   "**Fabrication and CAD/CAM:** Fusion 360 · CNC machining on the Tormach 770M and large-format ShopBot PRSalpha 96-48 · CAM programming and toolpath strategy · brass, marine plywood, and MDF · SMT and through-hole soldering · Prusa FDM and Formlabs SLA 3D printing, including advanced slicing · shop fabrication",
+   "**Web and Backend:** Flask · Quart · asyncio · Express and EJS · React and Next.js · SQLite · Power Automate",
+   "**Tools:** Git · GitHub · Linux · Make · Meson · Ninja · Poetry · pytest · ESP-IDF · STM32CubeMX · JetBrains (CLion, IntelliJ IDEA) · Adobe Illustrator · Docker (basic)"
+  ],
+  "entries": []
+ }
+]

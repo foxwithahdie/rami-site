@@ -1,0 +1,99 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Hero from '../../../components/Hero.astro';
+import Divider from '../../../components/Divider.astro';
+import Section from '../../../components/Section.astro';
+import Media from '../../../components/Media.astro';
+import ProjectNav from '../../../components/ProjectNav.astro';
+---
+<Base title="Olin Shop — rami" theme="shop" current="WORK"
+      description="An academic makerspace staffed mostly by students. Trainings, a 29-machine print fleet, and rebuilding Room 303.">
+  <Hero facet="IN THE SHOP" year="2025 — now" title="Olin Shop"
+        lead="An academic makerspace, staffed mostly by students. Most of my work is helping someone get unstuck on a machine they have never touched before."
+        tags="Prusa FDM  ·  Formlabs SLA  ·  SMT + through-hole  ·  CNC  ·  Fusion 360" />
+
+  <Divider kind="tape" />
+
+  <Section label="THE FLEET">
+    <p class="t-body">Twenty-nine Prusa 3D printers: eight MK3S+, eight Minis, seven MK4S, and six Core ONE.</p>
+    <p class="t-body">Belts loosen over time, gradually enough that nobody notices until prints start coming out wrong. Thermistors fail often enough that replacing them is routine, the way brake rotors are routine on a car.</p>
+    <p class="t-body">The Minis just do not really have problems.</p>
+    <p class="t-body">A separate room in the same shop holds the Stratasys F123 machines. I print on those, run student work orders, and do the simple service. The Stratasys training is someone else’s.</p>
+  </Section>
+
+  <Section label="TRAINING">
+    <p class="t-body">Three scheduled trainings: intro shop, Prusa FDM, and soldering. The Prusa one covers PLA and PETG, slicing, supports, and how we print here.</p>
+    <p class="t-body">TPU is not a scheduled session. It is one to one, working through advanced slicer settings on whatever someone is actually trying to print.</p>
+  </Section>
+
+  <Section label="TRAINING THE TRAINERS">
+    <p class="t-body">I teach newer shop assistants to run the printer trainings themselves, and to maintain the machines. One and a half so far. One on my own, and one split with another assistant.</p>
+    <p class="t-body">The authority is informal. Less than an RA, more the person you point at when someone in the shop has a question.</p>
+  </Section>
+
+  <Section label="ROOM 303">
+    <p class="t-body">The electronics rooms were a tale of neglect, inaccessibility and poor management. Then the building flooded, and the whole Electronics Studio had to be crammed into 303, the stockroom, which was already cramped.</p>
+    <p class="t-body">The surface-mount soldering training had already been developed in 303, before any of this. It let students build real PCBs instead of through-hole only, and it had nowhere good to happen.</p>
+    <p class="t-body">So we rebuilt 303. Surface-mount work, power electronics and analysis gear open to anyone, and still a stockroom with component bins people can find things in.</p>
+    <p class="t-note">Designing and creating a new space means nothing without giving students real access to the space.</p>
+    <p class="t-body">Shayla Arnold, provost, who had run an electronics space herself. Bradley Minch gave us the history of the room and pointed out that the classroom next door was the whole point: surface-mount work belongs beside where it gets taught, not across the building. Rachel Yang told us what equipment to keep and what to let go.</p>
+  </Section>
+
+  <Media src="/media/shop/303-before.jpg" ratio="ratio-16x9"
+         alt="Room 303 before the rebuild: shelves of red component bins crammed against benches, a tool chest and bins on the floor"
+         caption="303 before the rebuild"
+         copy="The stockroom before we started. Everything from the Electronics Studio, in a room that was already full." />
+
+  <Section label="TWO THINGS WE CHANGED OUR MINDS ABOUT">
+    <p class="t-body">Clearing the clutter filled the hallway, and we realised the hallway could be part of the room. Analysis benches went outside. Anything that needs ventilation, soldering irons and hot air guns, stayed in.</p>
+    <p class="t-body">Then we noticed electronics was the only shop space storing student projects inside it. That moved out too, onto a shelf in the corridor.</p>
+  </Section>
+
+  <Media flip src="/media/shop/eel.jpg" ratio="ratio-16x9"
+         alt="The finished Electronics Engineering Lab: clean benches with stools, instruments on shelves, labelled and sorted"
+         caption="the Electronics Engineering Lab"
+         copy="303 is done, labelled and sorted. It is not the stockroom any more, it is the Electronics Engineering Lab." />
+
+  <Section label="MAKERSPACE INSTITUTE">
+    <p class="t-body">In July the shop hosted its first Makerspace Institute, with people from twelve institutions who came to see how a student-run shop actually works. Some ran established labs. Some were building their first space.</p>
+  </Section>
+
+  <Media src="/media/shop/spotlight.mp4" webm="/media/shop/spotlight.webm" poster="/media/shop/spotlight-poster.jpg"
+         ratio="ratio-16x9" alt="The pan-tilt spotlight built during the workshop, a red and black 3D printed servo linkage moving on a wooden block"
+         caption="the electronics prototyping deep dive"
+         copy="I led the electronics prototyping deep dive: the orientation, the soldering training, how it feeds into courses like PIE, and then everyone built a spotlight with an Arduino and a breadboard." />
+
+  <Media flip src="/media/shop/foiled-notebook.jpg" ratio="ratio-16x9"
+         alt="A blue notebook with the Makerspace Institute logo pressed into the cover in teal foil"
+         caption="the brass Institute stamp, and a foiled notebook"
+         copy="I also cut the brass stamp for the Institute logo on the Tormach. It pressed the foil into everyone’s notebooks at coffee break." />
+
+  <section class="subpage wrap">
+    <div class="subpage-link is-soon">
+      <span class="t-label sp-eyebrow">SOFTWARE, IN THE SHOP</span>
+      <span class="t-card sp-title">The Shop Barcode Scanner</span>
+      <span class="t-item sp-blurb">Every tool in the shop, checked in and out, so nobody has to remember who has the good calipers. I own the backend and the Power Automate side. Tierra Raiti owns the interface.</span>
+      <span class="t-mono sp-tags">Python · Quart · asyncio · Power Automate</span>
+      <span class="t-label sp-open">COMING SOON!</span>
+    </div>
+  </section>
+
+  <ProjectNav
+    prev={{ href:'/making/', facet:'IN THE SHOP', title:'Making', blurb:'Four parts I drew and cut.' }}
+    next={{ href:'/experience/magfit/', facet:'FIRMWARE', title:'MagFit Prosthetics', blurb:'A socket that adjusts itself as a limb changes.' }} />
+</Base>
+
+<style>
+  .subpage { padding-top:44px; }
+  .subpage-link {
+    display:block; padding:24px; text-decoration:none; color:var(--ink);
+    border:var(--outline) solid var(--ink);
+    box-shadow:var(--shadow-x) var(--shadow-x) 0 var(--ink);
+  }
+  .sp-eyebrow { display:block; color:var(--accent); }
+  .sp-title { display:block; margin-top:12px; }
+  .sp-blurb { display:block; margin-top:12px; max-width:70ch; }
+  .sp-tags  { display:block; margin-top:14px; opacity:.75; }
+  .sp-open  { display:block; margin-top:16px; color:var(--accent); }
+  @media (min-width:64em) { .subpage { padding-top:80px; } .subpage-link { padding:40px; } }
+</style>

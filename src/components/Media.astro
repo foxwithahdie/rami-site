@@ -1,0 +1,80 @@
+---
+// Half text, half image. Ramzey's rule: never two photos side by side.
+// `flip` puts the image on the left. When no src is given the slot renders as
+// a labelled placeholder rather than disappearing, so the page still reads and
+// the gap is obvious.
+//
+// `native` is for a source too small to fill a half-page box. Instead of
+// stretching it into a ratio frame, the dashed border hugs the image at close
+// to its own pixel size. `maxw` caps how wide it is allowed to draw, so the
+// upscale stays under about 1.2x and never turns visibly soft.
+const { src, webm, poster, alt, caption, copy, flip = false, ratio = 'ratio-4x3', needed, native = false, maxw } = Astro.props;
+const isVideo = !!poster;
+---
+<section class={['media wrap', flip && 'is-flipped', native && 'is-native'].filter(Boolean).join(' ')}>
+  <figure class="media-fig">
+    {native ? (
+      <div class="frame" style={maxw ? `max-width:${maxw}px` : undefined}>
+        <img src={src} alt={alt} loading="lazy" decoding="async" />
+      </div>
+    ) : (
+    <div class={'ratio ' + ratio}>
+      {isVideo ? (
+        <video poster={poster} autoplay muted loop playsinline preload="metadata" aria-label={alt}>
+          {webm && <source src={webm} type="video/webm" />}
+          <source src={src} type="video/mp4" />
+          <img src={poster} alt={alt} />
+        </video>
+      ) : src ? (
+        <img src={src} alt={alt} loading="lazy" decoding="async" />
+      ) : (
+        <span class="slot t-mono">image needed<br />{needed}</span>
+      )}
+    </div>
+    )}
+    {caption && <figcaption class="t-mono media-cap">{caption}</figcaption>}
+  </figure>
+  {copy && <div class="media-copy t-body"><p>{copy}</p></div>}
+</section>
+
+<style>
+  .media { padding-top:28px; padding-bottom:8px; }
+  .media-fig { margin:0; }
+  .media-cap { margin-top:10px; opacity:.75; }
+  .media-copy { margin-top:20px; }
+  .slot {
+    position:absolute; top:0; left:0; width:100%; height:100%;
+    display:block; padding:20px; text-align:center;
+    opacity:.55;
+  }
+  /* Figma: 3px theme/ink with a 14/12 dash. The dashes are the point, they
+     make the image read as pasted in rather than framed. */
+  .ratio { border:3px dashed var(--ink); }
+  /* Native mode: same dashed frame, sized by the image rather than the box.
+     inline-block so the border hugs, and the padding gives it the mat that
+     stops a small photo reading as a mistake. */
+  .frame {
+    display:inline-block;
+    border:3px dashed var(--ink);
+    padding:14px;
+    max-width:100%;
+  }
+  .frame img { display:block; width:100%; height:auto; }
+  @media (min-width:64em) {
+    .media { padding-top:56px; padding-bottom:10px; display:grid; grid-template-columns:1fr 1fr; grid-column-gap:72px; align-items:center; }
+    .media-copy { margin-top:0; }
+    /* Default: copy left, image right. Flipped: image left, copy right.
+       Setting the column on ONE child and letting the other flow is enough,
+       and avoids the two rules fighting each other. */
+    .media .media-fig      { grid-column:2; grid-row:1; }
+    .media .media-copy     { grid-column:1; grid-row:1; }
+    .is-flipped .media-fig  { grid-column:1; grid-row:1; }
+    .is-flipped .media-copy { grid-column:2; grid-row:1; }
+    /* A native-size frame is narrower than its column, so push it to the
+       outer edge of the page. The slack then falls in the middle, where the
+       72px gutter already is, instead of stranding it mid-column. The
+       caption inherits the alignment and stays flush with the frame. */
+    .is-native .media-fig             { text-align:right; }
+    .is-native.is-flipped .media-fig  { text-align:left; }
+  }
+</style>

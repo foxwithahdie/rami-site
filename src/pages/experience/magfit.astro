@@ -1,0 +1,79 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Divider from '../../components/Divider.astro';
+import Section from '../../components/Section.astro';
+import Code from '../../components/Code.astro';
+import Media from '../../components/Media.astro';
+import ProjectNav from '../../components/ProjectNav.astro';
+---
+<Base title="MagFit Prosthetics — rami" theme="rehab" current="WORK"
+      description="A prosthetic socket that adjusts itself as a residual limb changes volume, using magnetorheological fluid.">
+  <Hero facet="FIRMWARE" year="2026 — now" title="MagFit Prosthetics"
+        lead="A residual limb changes volume through the day. The socket is supposed to change with it."
+        tags="STM32  ·  C++  ·  FreeRTOS  ·  USB CDC" />
+
+  <Divider kind="stiffening" />
+
+  <Section label="WHAT IT IS">
+    <p>A prosthetic socket that adjusts itself as a residual limb changes volume, using magnetorheological fluid and electropermanent magnets. It started as a student project and is working toward becoming a startup.</p>
+  </Section>
+
+  <Section label="WHAT I OWN">
+    <ul class="list">
+      <li class="t-item">The firmware architecture, interrupt driven, with one rule everything else follows from</li>
+      <li class="t-item">Force sensing resistor handling, plus the scaffolding for battery management, Bluetooth, PID and motor control</li>
+      <li class="t-item">A non-blocking printing and logging API, because nothing suitable existed</li>
+      <li class="t-item">The breadboard build of the signal board, and the firmware for the rig that characterizes the fluid</li>
+    </ul>
+  </Section>
+
+  <Section label="THE RULE">
+    <p class="t-body">Nothing except initialization is allowed to block. A socket that stalls while someone is walking on it is not acceptable, so the rule is written into the code rather than into a document.</p>
+    <Code code={`/*
+ * Runs before osKernelStart(). Creating FreeRTOS objects here is fine;
+ * blocking on them is not, and neither is any HAL call that waits.
+ * Anything that needs the scheduler belongs in app_main().
+ */`} />
+    <p class="t-note">app.cpp, at the top of init</p>
+    <p class="t-body">Printing follows the same rule. A formatted string goes into a stream buffer under a mutex, and a background task drains it over UART in interrupt mode. Nothing sits and waits on a serial port.</p>
+  </Section>
+
+  <Media src="/media/magfit/signal-board.jpg" ratio="ratio-4x3"
+         alt="The breadboard signal board: an STM32 Nucleo, a PCA9685 driver, trimpots and an LED bank on a black protoboard"
+         caption="the breadboard signal board"
+         copy="The firmware runs ahead of the hardware. The board is not fabricated yet, so everything is tested against a breadboard signal board." />
+
+  <Section label="THE RIG">
+    <p class="t-body">Before you can control the fluid, you have to know how it behaves. I wrote the firmware for the rig that measures it.</p>
+    <p class="t-body">One loop holds motor speed constant as the fluid stiffens. A second trims coil current until it hits setpoint. Torque, both branch currents, speed and field all get logged together at every setpoint.</p>
+    <p class="t-body">Getting there meant three mixed-signal problems. The Hall sensor output is analog and swings to 5V, but the Pico reads it on a 3V3 ADC pin, which tops out below what the sensor can put out. Encoder logic levels. And star grounding, to keep the motor return currents off the analog ground.</p>
+  </Section>
+
+  <Media flip src="/media/magfit/rig.jpg" ratio="ratio-4x3"
+         alt="The rig electronics on a breadboard: a Pico W, an ADS1115, a current sensor and a buck converter with its heatsink"
+         caption="the concentric cylinder rig"
+         copy="The rig that measures how the fluid behaves under a field. I wrote its firmware." />
+
+  <Section label="WHERE IT IS NOW">
+    <p class="t-body">Development runs on an STM32L432KC while the final board, built around a G474, is still in design. The G474 was picked because ST’s tooling can train and run models on low power hardware, which is what makes all day battery life realistic for someone actually wearing this.</p>
+  </Section>
+
+  <ProjectNav
+    prev={{ href:'/experience/olin-shop/', facet:'IN THE SHOP', title:'Olin Shop', blurb:"Teaching people to use machines they've never touched." }}
+    next={{ href:'/projects/rv32i/', facet:'DIGITAL DESIGN', title:'RV32I Processor', blurb:'A processor, built from the spec by hand.' }} />
+</Base>
+
+<style>
+  .list { list-style:none; margin:0; padding:0; }
+  .list > li { position:relative; padding-left:30px; }
+  .list > li + li { margin-top:14px; }
+  .list > li::before {
+    content:""; position:absolute; left:0; top:.62em;
+    width:14px; height:4px; background:var(--accent);
+  }
+  .gradient { display:flex; align-items:center; padding-top:6px; padding-bottom:6px; }
+  .g-bar { flex:1 1 auto; height:14px; margin:0 14px; background:var(--accent); }
+  .g-label { opacity:.7; white-space:nowrap; }
+  @media (min-width:64em) { .g-bar { height:22px; margin:0 22px; } }
+</style>

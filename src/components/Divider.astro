@@ -1,0 +1,127 @@
+---
+// The signature device at the top of each project page. Each one is drawn in
+// CSS, no images, so they cost nothing and re-colour with the page world.
+const { kind } = Astro.props;
+
+// Braille cell dot numbering:  1 4
+//                              2 5
+//                              3 6
+const BRAILLE = { h:[1,2,5], e:[1,5], l:[1,2,3], o:[1,3,5] };
+const word = ['h','e','l','l','o'];
+---
+{kind === 'stiffening' && (
+  <div class="dv stiffening" aria-hidden="true">
+    <span class="t-mono lab">field off</span>
+    <span class="dots">
+      {Array.from({ length: 18 }).map((_, i) => (
+        <span class="dot" style={`transform:scale(${(0.62 + i * 0.024).toFixed(3)})`}>
+          <span class="dot-core" style={`transform:scale(${(i / 17).toFixed(3)})`}></span>
+        </span>
+      ))}
+    </span>
+    <span class="t-mono lab">field on</span>
+  </div>
+)}
+
+{kind === 'braille' && (
+  <div class="dv braille">
+    <span class="cells" aria-label="hello, written in braille">
+      {word.map((ch) => (
+        <span class="cell">
+          {[1,2,3,4,5,6].map((d) => (
+            <span class={BRAILLE[ch].includes(d) ? 'bd is-on' : 'bd'}></span>
+          ))}
+        </span>
+      ))}
+    </span>
+    <span class="t-note note">the file on the SD card is called hello.brf</span>
+  </div>
+)}
+
+{kind === 'signal' && (
+  <ol class="dv signal" aria-label="Signal chain">
+    {['MUSCLE','sEMG','ADC','TCN','PWM','FINGERS'].map((s, i) => (
+      <li class="step"><span class="t-label">{s}</span>{i < 5 && <span class="wire" aria-hidden="true"></span>}</li>
+    ))}
+  </ol>
+)}
+
+{kind === 'ground' && <div class="dv ground" aria-hidden="true"></div>}
+
+{kind === 'tape' && (
+  <div class="dv tape" aria-hidden="true">
+    <span class="tape-end"></span><span class="tape-rule"></span><span class="tape-end is-r"></span>
+  </div>
+)}
+
+<style>
+  .dv { padding-left:var(--page-margin); padding-right:var(--page-margin); max-width:1920px; margin:0 auto; }
+
+  /* MagFit: the fluid stiffening as the field comes on. */
+  .stiffening { display:flex; align-items:center; padding-top:6px; padding-bottom:6px; }
+  .stiffening .lab { opacity:.7; white-space:nowrap; }
+  .dots { flex:1 1 auto; display:flex; align-items:center; justify-content:space-between; margin:0 16px; }
+  /* Hollow, filling in left to right as the field comes on. The ring is
+     always there; only the centre fills. */
+  /* Hollow rings whose centre fills in gradually across the row. The fill is
+     an inner circle scaled from 0 to 1, so the ramp reads as continuous
+     instead of flipping from empty to solid at one dot. */
+  .dot {
+    position:relative; display:block; width:18px; height:18px; border-radius:50%;
+    border:3px solid var(--accent); background:transparent;
+  }
+  .dot-core {
+    position:absolute; top:0; left:0; right:0; bottom:0;
+    border-radius:50%; background:var(--accent);
+  }
+
+  /* Braille: hello, as six-dot cells. */
+  .braille { display:flex; align-items:center; flex-wrap:wrap; padding-top:8px; padding-bottom:8px; }
+  .cells { display:flex; }
+  .cell { display:grid; grid-template-columns:repeat(2, 12px); grid-auto-rows:12px; margin-right:18px; }
+  .bd { width:8px; height:8px; border-radius:50%; border:2px solid var(--accent); opacity:.35; }
+  .bd.is-on { background:var(--accent); opacity:1; }
+  .braille .note { margin-left:8px; color:var(--accent); }
+
+  /* Myo-Amp: muscle to fingers, with the wire drawn between each stage. */
+  .signal { list-style:none; margin:0; display:flex; flex-wrap:wrap; align-items:center; padding-top:8px; padding-bottom:8px; }
+  .step { display:flex; align-items:center; margin-bottom:6px; }
+  .wire { display:block; width:44px; height:3px; background:var(--accent); margin:0 12px; }
+
+  /* biplup-run: the ground the runner runs along, scrolling right to left
+     the way it does in the game. A plain @keyframes animation on
+     background-position, which has worked since long before our 2017 floor. */
+  .ground {
+    height:16px; margin-top:6px; margin-bottom:6px;
+    background-image:
+      repeating-linear-gradient(to right, var(--ink) 0 10px, transparent 10px 22px),
+      repeating-linear-gradient(to right, var(--ink) 0 4px, transparent 4px 96px);
+    background-size:100% 3px, 100% 14px;
+    background-position:0 6px, 0 0;
+    background-repeat:repeat-x, repeat-x;
+    animation:ground-run 2.4s linear infinite;
+  }
+  @keyframes ground-run {
+    /* 22px and 96px are the two tile widths, so both loop seamlessly. */
+    from { background-position:0 6px, 0 0; }
+    to   { background-position:-22px 6px, -96px 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .ground { animation:none; } }
+
+  /* Olin Shop: a dimension line, the way a drawing marks a span. */
+  .tape { display:flex; align-items:center; padding-top:14px; padding-bottom:14px; }
+  .tape-rule { flex:1 1 auto; height:5px; background:var(--accent); }
+  .tape-end {
+    flex:0 0 auto; width:26px; height:26px;
+    border-left:5px solid var(--accent); border-top:5px solid var(--accent); border-bottom:5px solid var(--accent);
+  }
+  .tape-end.is-r { border-left:0; border-right:5px solid var(--accent); }
+
+  @media (min-width:64em) {
+    .dot { width:26px; height:26px; }
+    .cell { grid-template-columns:repeat(2, 18px); grid-auto-rows:18px; margin-right:26px; }
+    .bd { width:12px; height:12px; }
+    .wire { width:90px; margin:0 20px; }
+    .braille .note { margin-left:20px; }
+  }
+</style>

@@ -1,0 +1,18 @@
+---
+// The facet band. A solid block of the facet's own accent with the page paper
+// as its text, exactly as the Figma Hero "Facet" frame is drawn. This is the
+// thing that makes TEACHING green and FIRMWARE orange.
+const { name, theme } = Astro.props;
+---
+<span class="facet t-label" data-theme={theme}>{name}</span>
+
+<style>
+  .facet {
+    display:inline-block;
+    padding:10px 20px;
+    background:var(--accent);
+    color:var(--paper);
+    vertical-align:middle;
+  }
+  @media (max-width:63.99em) { .facet { padding:6px 12px; } }
+</style>

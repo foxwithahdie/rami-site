@@ -1,0 +1,157 @@
+---
+// Present on every page, and the target of the CONTACT link in the nav.
+// Chrome colours only, never the page theme.
+//
+// TWO THINGS ARE PLACEHOLDERS AND NEED RAMZEY:
+//   1. CONTACT_EMAIL   - the address to publish. Deliberately not guessed.
+//   2. FORM_ENDPOINT   - a no-JS form post needs somewhere to post to.
+//                        Until it is set, the form is hidden and the mailto
+//                        link is the whole contact path, which works in every
+//                        browser ever made.
+import Icon from './Icon.astro';
+
+const CONTACT_EMAIL = null;  // e.g. 'hello@example.com'
+const FORM_ENDPOINT = null;  // e.g. 'https://formspree.io/f/xxxxxxx'
+
+const boxes = [
+  { label: 'I COFOUNDED', name: 'Ideas Become Impact', href: 'https://www.ideasbecomeimpact.org', pixel: true,
+    mark: '/media/ibi/ibi-logo.svg', markW: 650, markH: 550 },
+  { label: 'CODE',        name: 'GitHub',              href: 'https://github.com/foxwithahdie',   icon: 'github' },
+  // LinkedIn ships its [in] bug as PNG only, and forbids redrawing or
+  // recolouring it. So this one is their exact file, byte for byte, rather
+  // than an inline path like the GitHub mark. It carries the ® glyph, which
+  // is why it is 840x779 and not square.
+  { label: 'ELSEWHERE',   name: 'LinkedIn',            href: 'https://www.linkedin.com/in/ramzey-burdette',
+    mark: '/media/brand/InBug-White.png', markW: 840, markH: 779 },
+  // No mark yet. Handshake publishes no brand-asset page I could find, and
+  // redrawing a logo from memory is exactly the mistake the LinkedIn swap
+  // caught. The empty .box-mark still reserves its height so all four boxes
+  // line up. See src/assets/brand/README.md.
+  { label: 'ALSO HERE',   name: 'Handshake',           href: 'https://app.joinhandshake.com/profiles/ramzeyburdette' },
+];
+---
+
+<footer class="footer" id="contact">
+  <div class="wrap footer-inner">
+
+    <section class="say">
+      <p class="t-label say-label">SAY SOMETHING</p>
+      <p class="say-lead">Want to message me<br />about something cool?</p>
+
+      {FORM_ENDPOINT ? (
+        <form class="form" method="POST" action={FORM_ENDPOINT}>
+          <label class="vh" for="email">Your email</label>
+          <input class="field" id="email" name="email" type="email" required
+                 placeholder={CONTACT_EMAIL ? 'you@somewhere.com' : 'you@somewhere.com'} />
+          <label class="vh" for="message">Message</label>
+          <textarea class="field" id="message" name="message" rows="4"
+                    placeholder="What are you building?"></textarea>
+          <button class="send" type="submit">SEND</button>
+        </form>
+      ) : (
+        <p class="form-note t-mono">
+          {CONTACT_EMAIL
+            ? <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+            : 'contact address not set yet'}
+        </p>
+      )}
+    </section>
+
+    <ul class="boxes">
+      {boxes.map((b) => (
+        <li>
+          <a class="box" href={b.href} target="_blank" rel="noopener">
+            <span class="box-mark">
+              {b.icon && <Icon name={b.icon} size={26} color="#FFFFFF" />}
+              {b.mark && <img src={b.mark} width={b.markW} height={b.markH} alt="" />}
+            </span>
+            <span class="t-label box-label">{b.label}</span>
+            <span class={b.pixel ? 'box-name is-pixel' : 'box-name'}>{b.name}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+  </div>
+</footer>
+
+<style>
+  .footer { background:var(--chrome-bg); color:var(--chrome-fg); padding-top:56px; padding-bottom:56px; }
+  .footer-inner { display:block; }
+
+  .say-label { color:var(--chrome-accent); margin:0 0 14px; }
+  .say-lead  { margin:0 0 22px; font-size:20px; line-height:1.3; }
+
+  .field {
+    display:block; width:100%; margin-bottom:14px; padding:14px 16px;
+    background:var(--chrome-fg); color:var(--chrome-bg);
+    border:4px solid var(--chrome-fg); border-radius:0;
+    font-family:"JetBrains Mono", Menlo, Consolas, monospace; font-size:13px;
+  }
+  .send {
+    display:inline-block; padding:16px 22px; border:0; border-radius:0; cursor:pointer;
+    background:var(--chrome-accent); color:var(--chrome-fg);
+    font-family:Archivo, Arial, sans-serif; font-weight:900; font-size:14px; letter-spacing:.04em;
+  }
+  .form-note a { color:var(--chrome-accent); }
+
+  .boxes { list-style:none; margin:34px 0 0; padding:0; }
+  .boxes > li { display:block; }
+  .boxes > li + li { margin-top:14px; }
+  /* height:100% so the three boxes match even when the pixel type in the
+     IBI box wraps to three lines. */
+  .box {
+    display:block; height:100%; padding:18px 20px;
+    border:4px solid var(--chrome-fg); text-decoration:none; color:var(--chrome-fg);
+    transition:transform var(--dur) var(--ease),
+               border-color var(--dur) var(--ease),
+               box-shadow var(--dur) var(--ease);
+  }
+  /* The same move the work cards make, translated to chrome: lift, border to
+     the accent, hard shadow. The shadow is chrome-accent rather than ink,
+     because ink on a #111 ground is invisible. :focus not :focus-visible,
+     which is outside the 2017 floor. */
+  .box:hover, .box:focus {
+    transform:translateY(-4px);
+    border-color:var(--chrome-accent);
+    box-shadow:var(--shadow-x) var(--shadow-x) 0 var(--chrome-accent);
+  }
+  /* The mark sits above the label, at a fixed height so the three boxes line
+     up even though the sprout is wider than it is tall and the other two are
+     square. The two brand marks are pinned to #FFFFFF at the call site rather
+     than inheriting: chrome-fg is a warm off-white, and neither LinkedIn nor
+     GitHub licenses a tinted version of their logo. The footer is the only
+     place they appear and its background never re-themes, so white is the
+     correct approved variation and it can be hardcoded safely. The sprout is
+     Ramzey's own artwork and keeps its greens. */
+  .box-mark { display:block; height:26px; margin-bottom:12px; }
+  .box-mark img { display:block; width:auto; height:100%; }
+  .box-label { display:block; color:var(--chrome-accent); margin-bottom:6px; }
+  .box-name  { display:block; font-weight:600; font-size:18px; }
+  /* Silkscreen is reserved for Ideas Become Impact. Nothing else uses it. */
+  .is-pixel  { font-family:Silkscreen, "JetBrains Mono", monospace; font-size:15px; }
+
+  /* Visually hidden, still read aloud. The 2017-safe clip pattern. */
+  .vh {
+    position:absolute; width:1px; height:1px; overflow:hidden;
+    clip:rect(0 0 0 0); white-space:nowrap;
+  }
+
+  @media (min-width: 64em) {
+    .footer { padding-top:110px; padding-bottom:110px; }
+    .footer-inner { display:grid; grid-template-columns:1fr 1fr; grid-column-gap:72px; align-items:start; }
+    .say-lead { font-size:38px; }
+    /* Two by two rather than four across. At four, each box is about 139px
+       and "Ideas Become Impact" in Silkscreen wraps to a mess; at two, each
+       gets roughly 298px, which is roomier than the three-across it replaces.
+       It also balances better against the tall SAY SOMETHING column. */
+    /* grid-auto-rows:1fr so both rows match even though the IBI box wraps to
+       two lines of Silkscreen and nothing else wraps at all. */
+    .boxes { margin-top:0; display:grid; grid-template-columns:repeat(2, 1fr); grid-column-gap:20px; grid-row-gap:20px; grid-auto-rows:1fr; }
+    .boxes > li + li { margin-top:0; }
+    .box-name { font-size:24px; }
+    .box-mark { margin-bottom:16px; }
+    .field { font-size:18px; }
+    .send { font-size:24px; padding:26px 46px; }
+  }
+</style>

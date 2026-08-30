@@ -1,0 +1,94 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Divider from '../../components/Divider.astro';
+import Section from '../../components/Section.astro';
+import Code from '../../components/Code.astro';
+import Media from '../../components/Media.astro';
+import ProjectNav from '../../components/ProjectNav.astro';
+const features = ['JUMBO BRAILLE','SPEECH TO BRAILLE','AUDIO FEEDBACK','HAPTIC FEEDBACK','DOCUMENT STORAGE','8-12 HR BATTERY','BLUETOOTH','LOADABLE LESSONS','PHYSICAL BUTTONS','PROTECTIVE CASE','LOST DEVICE ALERT','PORTABLE'];
+---
+<Base title="Braille E-Reader — rami" theme="tactile" current="WORK"
+      description="A low-cost braille e-reader. ESP32-S3 firmware turning Braille Ready Format files into actuated cells.">
+  <Hero facet="FIRMWARE" year="2025 — now" title="Braille E-Reader"
+        lead="A commercial braille display costs thousands of dollars, which prices out most of the people who need one."
+        tags="ESP32-S3  ·  C++  ·  ESP-IDF  ·  KiCad  ·  shift registers" />
+  <p class="role wrap t-mono">Firmware Lead · Olin Assistive Technology Lab</p>
+  <Divider kind="braille" />
+
+  <Section label="WHAT I OWN">
+    <p class="t-body">The firmware that turns a text file into something you can feel, and the main board it runs on.</p>
+    <ul class="list">
+      <li class="t-item">A shift register driver bit-banged over data, both clocks and output enable</li>
+      <li class="t-item">SD card mount, read and unmount, reading Braille Ready Format files</li>
+      <li class="t-item">Converted the codebase from C to C++ and wrapped the driver in a class</li>
+      <li class="t-item">The PCB main board, from schematic capture in KiCad</li>
+    </ul>
+  </Section>
+
+  <Section label="THE SUBTEAM">
+    <p class="t-body">I lead the firmware subteam. Everyone owns a branch, and the repo is basically the org chart.</p>
+    <Code code={`register-testing    me         driver + SD + the C++ move
+sd_card             f-noble    storage
+shiftregisters      pepper     cell driving
+usb                 metal      data ingest`} />
+    <p class="t-body">Goals and deadlines with each person, weekly meetings and 1:1s, and getting everyone ready for design reviews. I also run SMT soldering practice for the team.</p>
+    <p class="t-body">Beyond the subteam I sit on the lab's leadership coordination group. That work runs a year out instead of a sprint out: succession planning, recruiting members, and building the onboarding structure for next year.</p>
+  </Section>
+
+  <Section label="HELLO">
+    <p class="t-body">The first thing it ever said was hello, read off an SD card as a Braille Ready Format file and pushed out to the cells.</p>
+    <Code code={`std::string file = SD::to_path("/hello.brf");
+std::uint8_t braille_data[MAX_LINE_SIZE];
+ret = SD::read_file(file, braille_data, MAX_LINE_SIZE);
+
+ShiftRegister::configure();
+ShiftRegister::turn_on();
+// HELL06 -> hello!`} />
+    <p class="t-body">The bits came out backwards the first time. The commit that fixed it is called "small fix - put msb to lsb".</p>
+  </Section>
+
+  <Media needed="KiCad schematic or the fabbed board" ratio="ratio-4x3"
+         caption="the main board, at schematic"
+         copy="The main board is mine. It is still at schematic, and nothing has been fabricated yet." />
+
+  <Section label="WHERE IT IS NOW">
+    <p class="t-body">At schematic and component testing as of August 2026. Eight jumbo cells are planned, driven by electromagnets pushing a cam mechanism. Nothing is fabricated yet.</p>
+    <p class="t-body">The team did user research with the Carroll Center for the Blind and Perkins School for the Blind, which is the part that keeps the rest honest.</p>
+  </Section>
+
+  <Media flip needed="the test breadboard" ratio="ratio-4x3"
+         caption="the test breadboard"
+         copy="Component testing happens on a breadboard while the board is in design. Eight jumbo cells, driven by electromagnets pushing a cam mechanism." />
+
+  <Section label="WHAT'S NEXT">
+    <p class="t-body">The current device reads. The next one takes notes: a keyboard, a row of jumbo braille cells, a speaker, and the whole thing portable enough to carry.</p>
+    <p class="t-body">The feature set came out of two rounds of user interviews, not out of a meeting.</p>
+    <ul class="chips">{features.map((f) => <li class="chip t-label">{f}</li>)}</ul>
+    <p class="t-body">We spent the summer planning it. Six subteams on paper. Going forward I am a point person on hardware, and I lead the firmware and machine learning division.</p>
+    <p class="t-label bridge">FIRMWARE / SOFTWARE BRIDGE</p>
+    <p class="t-body">Design a way to compile high level code to work with low level hardware. Python down to C++.</p>
+    <p class="t-note">from the summer planning board. I work the firmware side of it.</p>
+    <p class="t-mono dim">None of this is built yet. This is where it stood at the end of summer 2026.</p>
+  </Section>
+
+  <ProjectNav
+    prev={{ href:'/experience/magfit/', facet:'FIRMWARE', title:'MagFit Prosthetics', blurb:'A socket that adjusts itself as a limb changes.' }}
+    next={{ href:'/projects/rv32i/', facet:'DIGITAL', title:'RV32I Processor', blurb:'A processor, built from the spec by hand.' }} />
+</Base>
+
+<style>
+  .role { padding-top:0; opacity:.75; }
+  .divider { padding-top:14px; padding-bottom:6px; color:var(--accent); }
+  .list { list-style:none; margin:0; padding:0; }
+  .list > li { position:relative; padding-left:30px; }
+  .list > li + li { margin-top:14px; }
+  .list > li::before {
+    content:""; position:absolute; left:0; top:.62em;
+    width:14px; height:4px; background:var(--accent);
+  }
+  .chips { list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; }
+  .chip { margin:0 8px 8px 0; padding:8px 12px; border:3px solid var(--ink); }
+  .bridge { color:var(--accent); }
+  .dim { opacity:.7; }
+</style>

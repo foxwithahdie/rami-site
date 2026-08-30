@@ -1,0 +1,44 @@
+/* Design tokens, read straight out of the Figma variable collection on
+   2026-08-29. BASE-STYLE.md had drifted on two Processor values; the file won.
+
+   Custom properties work from Edge 15 / Safari 9.1 / Firefox 31, inside the
+   2017 floor.
+
+   data-theme can sit on ANY element, not just <html>. That is how a home card,
+   a work-index group or a prev/next card wears a different world from the page
+   around it, which is exactly what setExplicitVariableModeForCollection does in
+   Figma. */
+
+:root,
+[data-theme="home"] {
+  --paper:#FAF7F2; --ink:#111111; --accent:#FF2D6F; --accent-alt:#FFD400; --annotation:#FF2D6F;
+}
+[data-theme="processor"] { --paper:#05070A; --ink:#E6EDF3; --accent:#22D3EE; --accent-alt:#6EE787; --annotation:#FF9E3D; }
+[data-theme="rehab"]     { --paper:#FFF4EC; --ink:#14100E; --accent:#FF6B35; --accent-alt:#2EC4B6; --annotation:#FF6B35; }
+[data-theme="handheld"]  { --paper:#EDEDED; --ink:#0B0B0B; --accent:#0B0B0B; --accent-alt:#8A8A8A; --annotation:#0B0B0B; }
+[data-theme="nonprofit"] { --paper:#F2FBF3; --ink:#10231A; --accent:#22B14C; --accent-alt:#71EB71; --annotation:#22B14C; }
+[data-theme="machined"]  { --paper:#2E3440; --ink:#E8ECF2; --accent:#4FD62E; --accent-alt:#A8AC55; --annotation:#FF7A45; }
+[data-theme="shop"]      { --paper:#FFF1D6; --ink:#241A08; --accent:#E8A020; --accent-alt:#8C5A12; --annotation:#B4620A; }
+[data-theme="software"]  { --paper:#EEF1FF; --ink:#10142B; --accent:#5B6CFF; --accent-alt:#A6B0FF; --annotation:#5B6CFF; }
+[data-theme="tactile"]   { --paper:#EDE7DE; --ink:#17140F; --accent:#4F46E5; --accent-alt:#B8A7FF; --annotation:#4F46E5; }
+[data-theme="shop-dark"] { --paper:#1A1206; --ink:#F7E9CE; --accent:#E8A020; --accent-alt:#7A4E10; --annotation:#E8A020; }
+
+:root {
+  /* Chrome. Constant on every page. Nav and footer only, and they never
+     inherit the page theme. */
+  --chrome-bg:#111111; --chrome-fg:#FAF7F2; --chrome-accent:#FF2D6F;
+
+  --outline:4px; --shadow-x:6px; --page-margin:22px;
+
+  /* Hover motion. One place to tune the whole site. */
+  --ease:cubic-bezier(.2,.7,.3,1);
+  --dur:180ms;
+}
+
+@media (min-width:64em) { :root { --outline:5px; --shadow-x:9px; --page-margin:72px; } }
+
+/* Any element carrying its own world paints its own background and text. */
+[data-theme] { background:var(--paper); color:var(--ink); }
+html[data-theme] { background:var(--paper); }
+
+@media (prefers-reduced-motion: reduce) { :root { --dur:0ms; } }

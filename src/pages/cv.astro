@@ -1,0 +1,150 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import cv from '../data/cv.json';
+import fs from 'node:fs';
+
+// The download button only appears if a PDF has actually been placed in
+// public/. The generated CV in ~/career-ops/outputs carries a phone number, a
+// personal email and a Handshake profile on page one, so it CANNOT be shipped
+// as it stands. A redacted build has to be dropped in deliberately.
+const PDF = '/ramzey-burdette-cv.pdf';
+const hasPdf = fs.existsSync(new URL('../../public' + PDF, import.meta.url));
+
+// Minimal markdown: **bold** and `code`. Everything else in cv.md is plain.
+// Escaped first so nothing in the source can inject markup.
+const esc = (s) => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+// Bold before italic, so ** is consumed first and does not leave stray *.
+const md  = (s) => esc(s)
+  .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+  .replace(/\*(.+?)\*/g, '<em>$1</em>')
+  .replace(/`(.+?)`/g, '<code>$1</code>');
+const flat  = cv.filter(s => s.entries.length === 0);
+const listed = cv.filter(s => s.entries.length > 0);
+---
+<Base title="CV — rami" theme="home" current="CV"
+      description="Ramzey Burdette's CV: experience, projects, education and skills.">
+  <Hero facet="CV" year="updated August 2026" title="CV"
+        lead="Everything the rest of the site deliberately leaves out."
+        tags="GPA  ·  coursework  ·  the full skills list  ·  the publication  ·  the older roles  ·  every row below opens"
+        note="it follows you down the page" />
+
+  <p class="dl wrap">
+    {hasPdf && <a class="btn" href={PDF} download>DOWNLOAD THE PDF &nbsp;↓</a>}
+    <span class="t-mono dl-hint">
+      {hasPdf
+        ? 'or print this page. ctrl + p gives you the same document.'
+        : 'ctrl + p prints this page as the CV. a downloadable PDF is not published yet.'}
+    </span>
+  </p>
+
+  {flat.map((s) => (
+    <section class="block wrap">
+      <h2 class="t-label block-head">{s.title.toUpperCase()}</h2>
+      <div class="block-body">
+        {s.intro.map((p) => <p class="t-item" set:html={md(p)} />)}
+      </div>
+    </section>
+  ))}
+
+  {listed.map((s) => (
+    <section class="block wrap">
+      <h2 class="t-label block-head">{s.title.toUpperCase()}</h2>
+      <div class="block-body">
+        <p class="t-note hint">every row opens. click one to see what is in it</p>
+        {s.entries.map((e) => (
+          <details class="entry" open={false}>
+            <summary>
+              <span class="e-more" aria-hidden="true"><i></i><i></i></span>
+              <span class="e-head">
+                <span class="t-card e-org">{e.org}</span>
+                <span class="t-mono e-meta" set:html={md(e.meta)} />
+              </span>
+              <span class="t-label e-toggle" aria-hidden="true">
+                <span class="is-shut">EXPAND</span><span class="is-open">CLOSE</span>
+              </span>
+            </summary>
+            <div class="e-body">
+              {e.summary && <p class="t-item e-sum" set:html={md(e.summary)} />}
+              <ul class="e-list">
+                {e.bullets.map((b) => <li class="t-item" set:html={md(b)} />)}
+              </ul>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+  ))}
+</Base>
+
+<style>
+  /* Ruled paper: every row sits on a line, and the whole page reads as a
+     document rather than a web page. */
+  .block { padding-top:26px; padding-bottom:6px; }
+  .block-head { color:var(--accent); margin:0 0 12px; }
+  .block-body > * + * { margin-top:14px; }
+  .hint { opacity:.6; margin:0 0 8px; }
+
+  .entry { border-bottom:3px solid var(--ink); padding:14px 0; }
+  .entry summary {
+    list-style:none; cursor:pointer;
+    display:flex; align-items:flex-start;
+  }
+  .entry summary::-webkit-details-marker { display:none; }
+
+  /* Figma puts the block on the LEFT and the word on the RIGHT. */
+  .e-more {
+    flex:0 0 auto; position:relative;
+    width:26px; height:26px; margin-right:16px; margin-top:3px;
+    background:var(--accent);
+    transition:transform var(--dur) var(--ease);
+  }
+  .e-more i { position:absolute; background:var(--paper); }
+  .e-more i:nth-child(1) { left:6px; right:6px; top:11px; height:4px; }
+  .e-more i:nth-child(2) { top:6px; bottom:6px; left:11px; width:4px; }
+  /* Open: the vertical bar goes, leaving a minus. */
+  .entry[open] .e-more i:nth-child(2) { display:none; }
+
+  .e-head { flex:1 1 auto; min-width:0; }
+  .e-org  { display:block; }
+  .e-meta { display:block; margin-top:6px; opacity:.75; }
+
+  .e-toggle { flex:0 0 auto; margin-left:16px; color:var(--accent); white-space:nowrap; }
+  .e-toggle .is-open { display:none; }
+  .entry[open] .e-toggle .is-shut { display:none; }
+  .entry[open] .e-toggle .is-open { display:inline; }
+
+  .e-body { padding-top:14px; padding-left:42px; }
+  .e-sum  { margin:0 0 12px; }
+  .e-list { list-style:none; margin:0; padding:0; }
+  .e-list > li { position:relative; padding-left:26px; }
+  .e-list > li + li { margin-top:10px; }
+  .e-list > li::before {
+    content:""; position:absolute; left:0; top:.62em;
+    width:12px; height:4px; background:var(--accent);
+  }
+  code { font-family:"JetBrains Mono", Menlo, Consolas, monospace; font-size:.9em; }
+
+  .dl { padding-top:6px; padding-bottom:10px; }
+  .btn {
+    display:inline-block; text-decoration:none; padding:14px 20px;
+    background:var(--accent); color:var(--paper);
+    border:var(--outline) solid var(--ink);
+    box-shadow:var(--shadow-x) var(--shadow-x) 0 var(--ink);
+    font-weight:900; font-size:13px; letter-spacing:.04em;
+    transition:box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease);
+  }
+  .btn:hover { box-shadow:2px 2px 0 var(--ink); transform:translate(4px,4px); }
+  .dl-hint { display:block; margin-top:12px; opacity:.7; }
+
+  @media (min-width:64em) {
+    .block { padding-top:56px; padding-bottom:10px; display:grid; grid-template-columns:230px 1fr; grid-column-gap:64px; align-items:start; }
+    .block-head { margin-top:8px; }
+    .entry { padding:20px 0; }
+    .e-body { padding-left:62px; }
+    .e-more { width:38px; height:38px; margin-right:24px; margin-top:6px; }
+    .e-more i:nth-child(1) { left:9px; right:9px; top:17px; height:4px; }
+    .e-more i:nth-child(2) { top:9px; bottom:9px; left:17px; width:4px; }
+    .e-toggle { margin-left:24px; }
+  }
+</style>

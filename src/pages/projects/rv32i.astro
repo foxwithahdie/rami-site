@@ -1,0 +1,106 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Section from '../../components/Section.astro';
+import Code from '../../components/Code.astro';
+import Media from '../../components/Media.astro';
+import ProjectNav from '../../components/ProjectNav.astro';
+---
+<Base title="RV32I RISC-V Processor — rami" theme="processor" current="WORK"
+      description="A single-cycle RV32I processor in SystemVerilog, written from the instruction set specification.">
+  <Hero facet="DIGITAL DESIGN" year="2025" title="RV32I RISC-V Processor"
+        lead="A processor, built from the spec by hand."
+        tags="SystemVerilog  ·  GTKWave  ·  OSS-CAD Suite  ·  Make"
+        repo="https://github.com/foxwithahdie/rv32i-riscv-processor" />
+
+  <Section label="WHAT IT IS">
+    <p>A single-cycle RV32I processor in SystemVerilog, written from the instruction set specification. Decode, register file, ALU, branching and memory access, all mapped down to digital circuit design.</p>
+  </Section>
+
+  <Section label="WHAT I BUILT">
+    <ul class="list">
+      <li class="t-item">Instruction decode and register file, straight from the spec</li>
+      <li class="t-item">ALU operations, branching, and byte, halfword and word memory sizing</li>
+      <li class="t-item">A custom testbench with assembly and machine code test programs</li>
+      <li class="t-item">Simulation toolchain on the OSS-CAD Suite, driven by Make</li>
+    </ul>
+  </Section>
+
+  <Section label="IN GTKWAVE">
+    <figure class="wave">
+      <img src="/media/rv32i/gtkwave-store.png" alt="GTKWave with four signal groups open, annotated in red, tracing a store instruction through to the LED peripheral" loading="lazy" decoding="async" />
+      <figcaption class="t-mono">a store, traced through to led_state</figcaption>
+    </figure>
+  </Section>
+
+  <Section label="THE SIGNALS">
+    <p class="t-body">The save file groups them by colour. Four groups, all open at once, because the bug was never in just one of them.</p>
+    <Code code={`clk · program_counter · current_instruction
+opcode · rs1 · rs2 · rd · funct3 · funct7
+imm_i · imm_s · imm_b · imm_u · imm_j · alu_result
+memory_data · data_write · data_write_done · register_write_done`} />
+  </Section>
+
+  <Section label="THE BUGS">
+    <p class="t-body">There were a lot of them. The worst was that PC-relative instructions ran twice. AUIPC, JAL, JALR and branches all got a second pass at the register file and the ALU, because the program counter moved before the instruction register caught up.</p>
+    <Code code={`// ! - For some reason, the AUIPC instruction turns on PC enable
+//     which makes pc_enable go high. Anyone else want to try debugging?
+// ! - ...it will "happen twice" because it will still try to load in
+//     the registers and do the ALU calculation when the program counter
+//     changes, but before the instruction changes. This happens no matter
+//     whether it's combinational or sequential.`} />
+    <p class="t-note">left in instructions.sv while it was still unsolved</p>
+    <p class="t-body">It reproduced identically whether the logic was combinational or sequential, which ruled out a whole class of causes. Control got restructured around an explicit <code>pc_enable</code> output and a <code>fetch_done</code> flag, with branches and jumps gated separately.</p>
+  </Section>
+
+  <Media needed="pc_enable going high twice across an AUIPC"
+         caption="the AUIPC double fire"
+         copy="The waveform that shows it. Ramzey has ten GTKWave captures from this processor; the one that shows pc_enable going high twice has not been identified yet."
+         ratio="ratio-16x9" />
+
+  <Section label="THE SHIFT BUG">
+    <p class="t-body">Two faults stacked. Arithmetic right shift behaved as a logical shift, and <code>shift_amount</code> was being driven from two places at once.</p>
+    <Code code={`shift_result = signed'(signed_rs1) >>> shift_amount;
+// and shift_amount moved out of alu_top, passed in from decode`} />
+    <p class="t-note">"something going on that's weird about shifting. unsure what it is"</p>
+  </Section>
+
+  <Section label="THE TEST PROGRAM">
+    <p class="t-body">Everything here is verified in simulation. These are the assembly programs the processor runs to prove each instruction group works. Every line carries the program counter, the expected register value and the encoding.</p>
+    <Code label="assembly/rv32i_test.s" code={`lui   x1, 0xFEDCC     # x1  = 0xFEDCC000   fedcc0b7
+addi  x1, x1, 0xA98   # x1  = 0xFEDCBA98   a9808093
+srai  x3, x1, 4       # x3  = 0xFFEDCBA9   4040d193
+add   x6, x5, x4      # x6  = 0x00123458   00428333
+auipc x10, 0x12345    # x10 = 0x12345028   12345517
+jal   x13, 0x28       # x13 = 0x00000038   028006ef
+beq   x15, x0, 12     #                    00078663
+jalr  x14, 0(x13)     # x14 = 0x00000060   00068767
+sb    x17, -4(x0)     #                    ff100e23
+lw    x18, -4(x0)     # x18 = 0xC0C0C0C0   ffc02903
+lh    x20, -4(x0)     # x20 = 0xFFFFC0C0   ffc01a03
+lb    x22, -4(x0)     # x22 = 0xFFFFFFC0   ffc00b03
+lbu   x23, -4(x0)     # x23 = 0x000000C0   ffc04b83`} />
+  </Section>
+
+  <Section label="WHERE IT LANDED">
+    <p class="t-body">Verified in simulation, not deployed to hardware. An <code>rv32m</code> branch extends toward the M extension, where integer division works and multiply does not yet.</p>
+  </Section>
+
+  <ProjectNav
+    prev={{ href:'/experience/magfit/', facet:'FIRMWARE', title:'MagFit Prosthetics', blurb:'A socket that adjusts itself as a limb changes.' }}
+    next={{ href:'/projects/myo-amp/', facet:'FIRMWARE', title:'Myo-Amp', blurb:"For people who can't grip after a stroke." }} />
+</Base>
+
+<style>
+  .list { list-style:none; margin:0; padding:0; }
+  .list > li { position:relative; padding-left:30px; }
+  .list > li + li { margin-top:14px; }
+  .list > li::before {
+    content:""; position:absolute; left:0; top:.62em;
+    width:14px; height:4px; background:var(--accent);
+  }
+  .wave { margin:0; }
+  .wave img { display:block; width:100%; border:var(--outline) solid var(--ink); }
+  .wave figcaption { margin-top:10px; opacity:.75; }
+  code { font-family:"JetBrains Mono", Menlo, Consolas, monospace; font-size:.9em; }
+</style>

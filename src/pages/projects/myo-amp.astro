@@ -1,0 +1,105 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Divider from '../../components/Divider.astro';
+import Section from '../../components/Section.astro';
+import Code from '../../components/Code.astro';
+import Media from '../../components/Media.astro';
+import ProjectNav from '../../components/ProjectNav.astro';
+const chain = ['MUSCLE','sEMG','ADC','TCN','PWM','FINGERS'];
+---
+<Base title="Myo-Amp — rami" theme="rehab" current="WORK"
+      description="A post-stroke grasp assist device. Three sEMG channels, a model on the second core, and cable-driven actuators.">
+  <Hero facet="FIRMWARE" year="2025" title="Myo-Amp"
+        lead="For people who can't grip after a stroke."
+        tags="Raspberry Pi Pico  ·  sEMG  ·  TensorFlow Lite Micro  ·  C++"
+        repo="https://github.com/foxwithahdie" />
+
+  <Divider kind="signal" />
+
+  <Section label="WHAT IT IS">
+    <p class="t-body">Three sEMG pads read the muscles in a forearm, a model decides which grip you meant, and cable-driven linear actuators close your fingers around the object. Five of us built it over a semester. I owned the firmware, which is where all of it had to meet.</p>
+    <p class="t-note">for this project, the firmware was the integration</p>
+    <p class="t-mono dim">Timur Gray, mechanical  ·  Brandon Spiller, electrical  ·  Anna Du, machine learning  ·  Masha Arakcheeva, team management</p>
+  </Section>
+
+  <Media src="/media/myoamp/completed.jpg" ratio="ratio-4x3"
+         alt="The device worn on a forearm: three linear actuators along the arm with cables running down to the fingers"
+         caption="the device on an arm"
+         copy="Three linear actuators sit along the forearm and pull cables down to the fingers. Everything else, the Pico and the drivers and the battery, straps on behind them." />
+
+  <Section label="WHAT I OWNED">
+    <ul class="list">
+      <li class="t-item">Three sEMG channels sampled round robin on one ADC, so no muscle waits its turn</li>
+      <li class="t-item">A shared data object living on both cores of the RP2040, handed across as a pointer through the hardware FIFO</li>
+      <li class="t-item">PWM and direction for three linear actuators, with the drivers idled between moves</li>
+      <li class="t-item">TensorFlow Lite Micro running on the second core, with Anna's trained model compiled into the binary</li>
+    </ul>
+  </Section>
+
+  <Section label="WHY TWO CORES">
+    <p class="t-body">One core reads the sensors, the other drives the motors. Put both on one core and the signal waits behind the motion, and a grip that lags is a grip nobody trusts.</p>
+    <p class="t-body">They share one object. Core zero builds it and passes the pointer across the hardware FIFO, core one catches it and casts it back. From then on both cores are writing into the same place, which is the part you have to be careful about.</p>
+    <p class="t-note">16 MHz on the Arduino we started on.  133 MHz and two cores on the Pico.</p>
+  </Section>
+
+  <Section label="THE ANALOG PROBLEM">
+    <p class="t-body">The Pico's own voltage reference was too noisy to measure muscle activation against, and it could not push enough current for three sensors anyway. So the sensors got their own clean three volt line, and that same line went into the ADC reference pin.</p>
+    <p class="t-note">A reading is only as good as the thing you compare it against.</p>
+  </Section>
+
+  <Media flip src="/media/myoamp/schematic.jpg" ratio="ratio-4x3"
+         alt="Two sheets of the electrical schematic: three sensor channels into GPIO 26, 27 and 28, and the clean three volt line arriving at ADC_VREF"
+         caption="the pin the readings depend on"
+         copy="Brandon Spiller's board, in the two sheets the firmware actually cared about. Three sensor channels into GPIO 26, 27 and 28, and the clean three volt line arriving at ADC_VREF on pin 35." />
+
+  <Section label="THE GRIPS">
+    <p class="t-body">The model picks between three grips and two kinds of not moving: open hand, air pinch, full fist, resting, and still resting. Anna Du trained it. My job was getting it onto the chip and turning its answer into motors.</p>
+  </Section>
+
+  <Media src="/media/myoamp/confusion_matrix.jpg" ratio="ratio-4x3"
+         alt="Anna Du's confusion matrix for the five-class model: the three grips separate cleanly, the two resting states do not"
+         caption="Anna Du's confusion matrix"
+         copy="Anna's evaluation of the model. The three grips separate cleanly. The two resting states do not, which is fair, since holding still and holding still look the same coming off a muscle." />
+
+  <Section label="WHAT IT NEVER DID">
+    <p class="t-body">The model path is written and it is not connected. The firmware samples, the classifier has somewhere to put its answer, and the second core runs a fixed sweep instead of the grip it picked.</p>
+    <Code code={`// instance->get_linear_actuator(0).drive(instance->get_model_value(0));
+// insert ml read code`} />
+    <p class="t-note">still sitting in main.cpp</p>
+  </Section>
+
+  <Section label="WHERE IT LANDED">
+    <p class="t-body">The device underperformed. One motor driver was carrying two linear actuators, went past what it could supply, and broke. The replacement never shipped, so the build finished on a mismatched pair and reliability went with it.</p>
+    <p class="t-body">The current budget was the mistake, and we found it too late to re-spec.</p>
+  </Section>
+
+  <Media flip src="/media/myoamp/actuator.jpg" ratio="ratio-4x3"
+         alt="The actuator wiring drawn out: the left driver carries two linear actuators, the right one carries a single actuator"
+         caption="two actuators on one driver"
+         copy="The failure, drawn. The driver on the left has two linear actuators hanging off it and the one on the right has one. That is the current budget problem in a picture." />
+
+  <Media src="/media/myoamp/full.jpg" ratio="ratio-4x3"
+         alt="The whole device off the arm on a table: two breadboards, three sEMG pads, three actuators, a battery in a printed box"
+         caption="everything, laid out"
+         copy="Off the arm and on a table. Two breadboards, three sEMG pads, three actuators, a battery in a printed box, and the amount of wire that takes." />
+
+  <ProjectNav
+    prev={{ href:'/projects/rv32i/', facet:'DIGITAL DESIGN', title:'RV32I Processor', blurb:'A processor, built from the spec by hand.' }}
+    next={{ href:'/projects/biplup-run/', facet:'GAMES', title:'biplup-run', blurb:'A game on hardware with no operating system.' }} />
+</Base>
+
+<style>
+  .list { list-style:none; margin:0; padding:0; }
+  .list > li { position:relative; padding-left:30px; }
+  .list > li + li { margin-top:14px; }
+  .list > li::before {
+    content:""; position:absolute; left:0; top:.62em;
+    width:14px; height:4px; background:var(--accent);
+  }
+  .dim { opacity:.7; }
+  .chain { list-style:none; margin:0; padding-top:6px; padding-bottom:6px; display:flex; flex-wrap:wrap; align-items:center; }
+  .chain-step { display:flex; align-items:center; margin:0 0 8px 0; }
+  .chain-arrow { color:var(--accent); margin:0 10px; }
+  @media (min-width:64em) { .chain-arrow { margin:0 18px; } }
+</style>

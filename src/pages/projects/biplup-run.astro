@@ -1,0 +1,81 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Divider from '../../components/Divider.astro';
+import Section from '../../components/Section.astro';
+import Code from '../../components/Code.astro';
+import Media from '../../components/Media.astro';
+import ProjectNav from '../../components/ProjectNav.astro';
+---
+<Base title="biplup-run — rami" theme="handheld" current="WORK"
+      description="An endless runner for the Game Boy Advance, written in C with no operating system underneath.">
+  <Hero facet="GAMES" year="2025" title="biplup-run" note="legally distinct"
+        lead="An endless runner on hardware with no operating system. 16.8 MHz, and everything you get you have to ask for."
+        tags="C  ·  libtonc  ·  Meson  ·  arm-none-eabi-gcc"
+        repo="https://github.com/olincollege/biplup-run" />
+
+  <Divider kind="ground" />
+
+  <Section label="WHAT IT IS">
+    <p>A Pokemon themed endless runner for Game Boy Advance. An ARM7TDMI at 16.8 MHz with no operating system, so anything the game does, somebody has to write.</p>
+  </Section>
+
+  <Section label="MY PART">
+    <ul class="list">
+      <li class="t-item">Project setup, and the Meson cross-compilation toolchain</li>
+      <li class="t-item">The unit test framework, and the tests that run in it</li>
+      <li class="t-item">Physics, collision and the high score. This is the part where I was learning</li>
+    </ul>
+  </Section>
+
+  <Section label="THE TOOLCHAIN">
+    <p class="t-body">Cross-compiling C into a real GBA ROM with Meson, <code>arm-none-eabi-gcc</code> and ninja, set up to build from Windows, macOS or Linux. libtonc underneath for direct hardware access, which keeps full control without giving up every convenience.</p>
+  </Section>
+
+  <Media src="/media/biplup/game.mp4" webm="/media/biplup/game.webm" poster="/media/biplup/game-poster.jpg"
+         ratio="ratio-3x2" alt="The game running in an emulator: a Piplup sprite jumping obstacles, score and high score at the top"
+         caption="the game in the emulator"
+         copy="A Pokemon themed endless runner for the Game Boy Advance, running in an emulator. The flashing kit worked. The cartridge we got was the wrong one." />
+
+  <Section label="TESTS ON A GAME BOY">
+    <p class="t-body">Meson does not cross-compile tests well, or at least it did not then. Running a test means running it on the target, and the target is a Game Boy. So the framework had to exist before any of the tests could.</p>
+    <p class="t-body">A Game Boy has nowhere to print to. No terminal, no stdout, nothing watching. So the tests are their own ROM, and the results get drawn on the screen.</p>
+    <Code code={`snprintf(test_buffer, sizeof(test_buffer),
+         "system_utils.c:\\n\\n%d%d%d\\n\\ntext.c:\\n\\n%d%d%d%d\\n\\n..."
+         SYSTEM_UTILS_TESTS, TEXT_TESTS, INPUT_TESTS,
+         OBJECT_UTILS_TESTS, KINEMATICS_TESTS);
+
+while (true) {
+  tte_set_pos(5, 7);
+  tte_write(test_buffer);
+}`} />
+    <Code code={`#define INPUT_TESTS \\
+  test_pregame_reset_score(), test_pregame_reset_frame(), \\
+      test_pregame_to_game(), test_jump_state(), ...`} />
+    <p class="t-note">one digit per test, read off the screen</p>
+  </Section>
+
+  <Media flip src="/media/biplup/test-rom.png" ratio="ratio-3x2"
+         alt="The test ROM output on screen: source file names, each followed by a row of ones"
+         caption="the test ROM"
+         copy="Every test returns 1 or 0. A macro expands a whole file worth of tests into a comma separated list, so each one lands as a single digit on screen and you read the results off the screen." />
+
+  <Section label="WHERE IT LANDED">
+    <p class="t-body">Four of us over about five weeks, for Software Systems. A lot of it was pair programmed, sat at one machine, which is why the commit history reads the way it does.</p>
+  </Section>
+
+  <ProjectNav
+    prev={{ href:'/projects/myo-amp/', facet:'FIRMWARE', title:'Myo-Amp', blurb:"For people who can't grip after a stroke." }}
+    next={{ href:'/making/', facet:'IN THE SHOP', title:'Making', blurb:'Four parts I drew and cut.' }} />
+</Base>
+
+<style>
+  .list { list-style:none; margin:0; padding:0; }
+  .list > li { position:relative; padding-left:30px; }
+  .list > li + li { margin-top:14px; }
+  .list > li::before {
+    content:""; position:absolute; left:0; top:.62em;
+    width:14px; height:4px; background:var(--accent);
+  }
+  code { font-family:"JetBrains Mono", Menlo, Consolas, monospace; font-size:.9em; }
+</style>

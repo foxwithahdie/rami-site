@@ -1,0 +1,19 @@
+---
+// Takes the listing as a `code` PROP, not as slotted children.
+// Multi-line text passed as children is whitespace-normalised before it
+// reaches the <pre>, which silently joins every line into one. A template
+// literal passed as a prop keeps its newlines.
+const { label, code } = Astro.props;
+---
+<div class="code">
+  {label && <p class="t-label code-label">{label}</p>}
+  <pre class="t-mono"><code>{code}</code></pre>
+</div>
+
+<style>
+  .code { border:3px solid var(--accent); padding:22px 20px; overflow-x:auto; margin:26px 0; }
+  .code-label { color:var(--accent); margin:0 0 10px; }
+  pre { margin:0; white-space:pre; }
+  pre, code { font-family:"JetBrains Mono", Menlo, Consolas, monospace; line-height:1.6; }
+  @media (min-width:64em) { .code { padding:28px 30px; margin:40px 0; } }
+</style>

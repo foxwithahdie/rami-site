@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+*.log
+
+# Never commit the originals. They live in ~/projects/portfolio and one of them
+# is 102 MB, which GitHub rejects outright. Only downscaled derivatives in
+# public/media/ are tracked.
+*.orig.*
+
+# NEVER ship the generated CV PDF. ~/career-ops/outputs/ramzey-burdette-cv.pdf
+# carries her phone number, personal email and Handshake profile on page one.
+# Ramzey, 2026-08-29: "NO DONT SHIP IT". If a downloadable CV is ever wanted it
+# has to be a separately generated, redacted build that she approves.
+public/*.pdf

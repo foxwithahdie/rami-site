@@ -1,0 +1,49 @@
+---
+import Facet from './Facet.astro';
+import { themeOf } from '../data/facets.js';
+import { themeForHref } from '../data/routes.js';
+// Each card is painted in the world of the page it goes TO, not the page it
+// sits on. Same rule as the Figma nav cards, which carry an explicit variable
+// mode for their destination.
+const { prev, next } = Astro.props;
+---
+<nav class="pnav wrap" aria-label="Other work">
+  {prev && (
+    <a class="pnav-item" href={prev.href} data-theme={prev.theme || themeForHref(prev.href)}>
+      <span class="t-label pnav-dir">← PREVIOUS</span>
+      <Facet name={prev.facet} theme={themeOf(prev.facet)} />
+      <span class="t-card pnav-title">{prev.title}</span>
+      <span class="t-item pnav-blurb">{prev.blurb}</span>
+    </a>
+  )}
+  {next && (
+    <a class="pnav-item is-next" href={next.href} data-theme={next.theme || themeForHref(next.href)}>
+      <span class="t-label pnav-dir">NEXT →</span>
+      <Facet name={next.facet} theme={themeOf(next.facet)} />
+      <span class="t-card pnav-title">{next.title}</span>
+      <span class="t-item pnav-blurb">{next.blurb}</span>
+    </a>
+  )}
+</nav>
+
+<style>
+  .pnav { padding-top:44px; padding-bottom:44px; }
+  .pnav-item {
+    display:block; padding:22px; text-decoration:none; color:var(--ink);
+    border:var(--outline) solid var(--ink);
+    box-shadow:var(--shadow-x) var(--shadow-x) 0 var(--ink);
+  }
+  .pnav-item + .pnav-item { margin-top:22px; }
+  .pnav-item { transition:box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .pnav-item:hover { box-shadow:2px 2px 0 var(--ink); transform:translate(4px,4px); }
+  .pnav-dir   { display:block; color:var(--accent); }
+  .pnav-item :global(.facet) { margin-top:14px; }
+  .pnav-title { display:block; margin-top:6px; }
+  .pnav-blurb { display:block; margin-top:8px; }
+  .is-next { text-align:right; }
+  @media (min-width:64em) {
+    .pnav { padding-top:90px; padding-bottom:90px; display:grid; grid-template-columns:1fr 1fr; grid-column-gap:40px; }
+    .pnav-item + .pnav-item { margin-top:0; }
+    .pnav-item { padding:34px; }
+  }
+</style>

@@ -1,0 +1,77 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Section from '../../components/Section.astro';
+import Media from '../../components/Media.astro';
+import ProjectNav from '../../components/ProjectNav.astro';
+const blocks = ['when ⚑ clicked','move 10 steps','turn ↻ 90','repeat 4','if · else','wait 1 sec','and','< >'];
+---
+<Base title="Ideas Become Impact — rami" theme="nonprofit" current="WORK"
+      description="A nonprofit teaching machine learning and AI literacy to middle and high school students.">
+  <Hero facet="TEACHING" year="2025 — now" title="Ideas Become Impact"
+        lead="A nonprofit that teaches machine learning and AI literacy to middle and high school students, and how they can use it to impact the world."
+        tags="Co-Founder" repo="https://www.ideasbecomeimpact.org" />
+
+  <div class="wrap sprout">
+    <img src="/media/ibi/ibi-logo.svg" width="650" height="550" alt="" />
+  </div>
+
+  <div class="palette wrap" aria-hidden="true">
+    {blocks.map((b) => <span class="block t-pixel">{b}</span>)}
+  </div>
+
+  <Section label="MY PART">
+    <p>The technical and logistical work of getting physical hardware into students’ hands, and leading the in-person builds once it is there. Hardware in a classroom fails in ways a laptop does not, and somebody has to own that.</p>
+  </Section>
+
+  <Section label="SCRATCH-ROBOTS">
+    <p class="t-body">Students program a robot before they can write code.</p>
+    <p class="t-body">A MATLAB app with a Scratch-style block palette: motion, repeat, if and else, booleans and comparisons. The blocks resolve down to MATLAB, which talks to a Neato robot over UDP. Blocks at the top, packets at the bottom.</p>
+  </Section>
+
+  <Media needed="students with the Neatos" ratio="ratio-3x2"
+         caption="students with the Neatos"
+         copy="Watching someone drive a robot around a room with blocks, twenty minutes after never having programmed anything, is the whole point of it." />
+
+  <Section label="THE HEARTBEAT DEMO">
+    <p class="t-body">A live machine learning demo built for a table at a community event. It reads your pulse, trains on it, and then makes predictions from it while you watch.</p>
+  </Section>
+
+  <Media flip needed="the block palette, or the heartbeat app" ratio="ratio-3x2"
+         caption="the heartbeat app"
+         copy="A Flask app with the interface, the live plotting, and the training code. All three co-founders built it. Getting a model to be legible to someone in the ninety seconds they are standing at your table is a different problem from getting it to be accurate." />
+
+  <Section label="WHERE IT RUNS">
+    <p class="t-body">Workshops in Waltham, Boston and Brockton, plus Seattle and Bellevue, and online internationally. Schools, libraries, clubs and community rooms.</p>
+    <p class="t-body">The first pilot chapter is at the Waltham Boys and Girls Club, where middle schoolers built their own projects, including a health monitoring app.</p>
+    <p class="t-body">Workshops are the way in. Chapters are the thing that lasts: student-led clubs that run their own long-term projects on problems they picked, and host workshops for younger students in their own neighbourhoods.</p>
+  </Section>
+
+  <ProjectNav
+    prev={{ href:'/projects/biplup-run/', facet:'GAMES', title:'biplup-run', blurb:'A game on hardware with no operating system.' }}
+    next={{ href:'/experience/olin-shop/', facet:'SHOP', title:'Olin Shop', blurb:"Teaching people to use machines they've never touched." }} />
+</Base>
+
+<style>
+  /* Silkscreen is reserved for Ideas Become Impact. Nothing else uses it. */
+  .palette { padding-top:10px; padding-bottom:10px; display:flex; flex-wrap:wrap; }
+  .block {
+    display:inline-block; margin:0 8px 8px 0; padding:8px 12px;
+    background:var(--accent); color:var(--paper);
+    border:3px solid var(--ink);
+  }
+  .t-pixel { font-family:Silkscreen, "JetBrains Mono", monospace; font-weight:700; font-size:11px; }
+  @media (min-width:64em) {
+    .palette { padding-top:20px; padding-bottom:20px; }
+    .block { padding:12px 18px; margin:0 12px 12px 0; }
+    .t-pixel { font-size:15px; }
+  }
+
+  /* The mark alone, not the wordmark: the hero already says the name. */
+  .sprout { margin:24px 0 0; }
+  .sprout img { display:block; width:96px; height:auto; }
+  @media (min-width:64em) {
+    .sprout { margin-top:36px; }
+    .sprout img { width:120px; }
+  }
+</style>

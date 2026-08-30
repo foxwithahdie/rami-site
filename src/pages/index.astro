@@ -1,0 +1,179 @@
+---
+import Base from '../layouts/Base.astro';
+import { reel, facets } from '../data/work.js';
+import Facet from '../components/Facet.astro';
+import WorkCard from '../components/WorkCard.astro';
+import { themeOf } from '../data/facets.js';
+import { isLive } from '../data/routes.js';
+---
+<Base
+  title="rami — I work on the low level"
+  description="Ramzey Burdette. Embedded systems, firmware and digital design, and teaching people to do the same."
+  theme="home"
+>
+  <!-- ================= HERO ================= -->
+  <section class="hero wrap">
+    <h1 class="t-display">i work on the low level.</h1>
+    <p class="t-mono hero-sub">embedded systems &nbsp;·&nbsp; firmware &nbsp;·&nbsp; digital design</p>
+    <p class="hero-actions">
+      <a class="btn" href="/work/">SEE THE WORK</a>
+      <a class="btn btn-ghost" href="/cv/">MY CV</a>
+    </p>
+  </section>
+
+  <!-- ================= WORK REEL ================= -->
+  <section class="reel-section">
+    <div class="wrap reel-head">
+      <h2 class="t-heading">RECENT WORK</h2>
+      <p class="t-note reel-note">scroll through. each one<br />has its own page</p>
+    </div>
+
+    <!-- A native horizontal scroller. Touch, trackpad, shift+wheel and the
+         keyboard all scroll it with no script. The chevron buttons in the
+         Figma file are omitted deliberately: they cannot work without
+         JavaScript, and the note above already tells you to scroll. -->
+    <ul class="reel" tabindex="0" aria-label="Recent work">
+      {reel.map((c) => (
+        <li class="cell">
+          <WorkCard facet={c.facet} year={c.year} title={c.title}
+                    blurb={c.blurb} tags={c.tags} href={c.href}
+                    theme={c.theme} soon={!isLive(c.href)} />
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- ================= ABOUT ================= -->
+  <section class="about wrap">
+    <div class="about-copy">
+      <p class="t-label about-eyebrow">ABOUT</p>
+      <h2 class="t-heading">I build the things<br />I didn't have.</h2>
+      <p class="t-body about-body">
+        I grew up without much access to any of this, and I didn’t know it at
+        the time. Most of what I make now ends up with someone the market
+        skipped.
+      </p>
+      <p><a class="btn" href="/about/">MORE ABOUT ME &nbsp;→</a></p>
+    </div>
+    <ul class="facets">
+      {facets.map((f) => <li><Facet name={f} theme={themeOf(f)} /></li>)}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  /* ---- Hero ---- */
+  .hero { padding-top:48px; padding-bottom:48px; }
+  .hero-sub { margin:18px 0 0; }
+  .hero-actions { margin:28px 0 0; }
+  .hero-actions .btn + .btn { margin-left:14px; }
+
+  .btn {
+    display:inline-block; text-decoration:none;
+    padding:16px 22px;
+    background:var(--accent); color:var(--paper);
+    border:var(--outline) solid var(--ink);
+    box-shadow:var(--shadow-x) var(--shadow-x) 0 var(--ink);
+    font-weight:900; font-size:14px; letter-spacing:.04em;
+  }
+  .btn-ghost { background:var(--paper); color:var(--ink); }
+  .btn { transition:box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .btn:hover { box-shadow:2px 2px 0 var(--ink); transform:translate(4px,4px); }
+
+  /* ---- Work reel ---- */
+  .reel-section { padding-top:38px; padding-bottom:48px; }
+  .reel-head { margin-bottom:22px; }
+  .reel-note { color:var(--accent); margin:10px 0 0; }
+
+  .reel {
+    list-style:none; margin:0; padding:0 var(--page-margin) 10px;
+    display:flex; flex-wrap:nowrap;
+    overflow-x:auto; overflow-y:visible;
+    padding-top:26px; padding-bottom:40px;
+    /* Half the scroller minus half a card, so the first and last card can
+       both sit dead centre and take the highlight. */
+    padding-left:calc(50% - 140px); padding-right:calc(50% - 140px);
+    -webkit-overflow-scrolling:touch;
+    scroll-snap-type:x mandatory;    /* pure enhancement; harmless where absent */
+    scroll-behavior:smooth;
+
+    /* Hide the scrollbar without disabling the scrolling. All three of these
+       are progressive: a browser that does not know them keeps its bar and
+       loses nothing. Touch, trackpad, shift+wheel and the keyboard all still
+       work, and the reel carries tabindex="0" so it is focusable and
+       arrow-scrollable. The handwritten note above is the affordance now. */
+    scrollbar-width:none;            /* Firefox 64+ */
+    -ms-overflow-style:none;         /* old Edge, IE */
+  }
+  .reel::-webkit-scrollbar { display:none; }   /* Chrome, Safari, new Edge */
+  .reel > li + li { margin-left:20px; }
+  .cell { flex:0 0 auto; width:280px; display:flex; scroll-snap-align:center; }
+
+  /* The carousel: the card nearest the middle is full size, its neighbours sit
+     back. This is a SCROLL-DRIVEN CSS ANIMATION, so it needs no JavaScript.
+     `animation-timeline` is 2023 and outside our 2017 floor, which is exactly
+     why it lives behind @supports: browsers that have it get the effect,
+     everything older gets eight identical cards and loses nothing. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      /* A game menu, not a slideshow.
+         `entry 10% exit 90%` is the working range: widening it to
+         `entry 0% exit 100%` pins every card at the start of the timeline and
+         nothing ever reaches full size.
+         The slow feel comes from the keyframes, not the range: a PLATEAU from
+         38% to 62% means the active card holds at full size through the middle
+         instead of passing through it, which is the detent a console menu has. */
+      .cell {
+        animation: reel-pop linear both;
+        animation-timeline: view(inline);
+        animation-range: entry 10% exit 90%;
+        transform-origin: center center;
+      }
+      @keyframes reel-pop {
+        0%        { transform: scale(.88) translateY(8px); opacity:.72; }
+        38%, 62%  { transform: scale(1)   translateY(-4px); opacity:1;  }
+        100%      { transform: scale(.88) translateY(8px); opacity:.72; }
+      }
+      .cell > :global(.card) {
+        animation: reel-lift linear both;
+        animation-timeline: view(inline);
+        animation-range: entry 10% exit 90%;
+      }
+      @keyframes reel-lift {
+        0%, 100%  { border-color: var(--ink); box-shadow: var(--shadow-x) var(--shadow-x) 0 var(--ink); }
+        38%, 62%  { border-color: var(--accent); box-shadow: calc(var(--shadow-x) + 5px) calc(var(--shadow-x) + 5px) 0 var(--ink); }
+      }
+    }
+  }
+
+  /* ---- About ---- */
+  .about { padding-top:38px; padding-bottom:56px; background:var(--accent-alt); }
+  .about-eyebrow { color:var(--ink); margin:0 0 12px; }
+  .about-body { margin:16px 0 24px; }
+  .facets { list-style:none; margin:28px 0 0; padding:0; display:flex; flex-wrap:wrap; }
+  .facets > li { margin:0 10px 10px 0; }
+  /* Stroked here and nowhere else. Facet.astro is also the hero chip on every
+     project page, where a border would fight the page's own outlines; on the
+     yellow About strip the six blocks need the edge to hold their shape.
+     :global because .facet belongs to the child component's scope. */
+  .about .facets :global(.facet) { border:var(--outline) solid var(--ink); }
+
+  /* ---- Desktop ---- */
+  @media (min-width: 64em) {
+    .hero { padding-top:120px; padding-bottom:120px; }
+    .hero-sub { margin-top:26px; }
+    .hero-actions { margin-top:44px; }
+    .hero-actions .btn + .btn { margin-left:24px; }
+    .btn { padding:26px 46px; font-size:24px; }
+
+    .reel-section { padding-top:70px; padding-bottom:90px; }
+    .reel-head { display:flex; align-items:flex-start; }
+    .reel-head .reel-note { margin:0 0 0 44px; }
+    .reel > li + li { margin-left:32px; }
+    .cell { width:466px; }
+    .reel { padding-left:calc(50% - 233px); padding-right:calc(50% - 233px); }
+
+    .about { padding-top:80px; padding-bottom:80px; background:var(--accent-alt); display:grid; grid-template-columns:1fr minmax(0,640px); grid-column-gap:72px; align-items:start; }
+    .facets { margin-top:0; max-width:640px; justify-content:flex-start; }
+  }
+</style>

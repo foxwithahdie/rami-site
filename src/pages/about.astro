@@ -1,0 +1,86 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import Media from '../components/Media.astro';
+import Facet from '../components/Facet.astro';
+import Divider from '../components/Divider.astro';
+import { themeOf } from '../data/facets.js';
+const facets = [
+  { name:'FIRMWARE',       text:'The layer where every other part of a device has to agree with the others. On Myo-Amp that is literally what it was: the firmware was the integration.' },
+  { name:'DIGITAL DESIGN', text:'Reading a specification and turning it into logic a machine follows, one instruction at a time. No library underneath it.' },
+  { name:'IN THE SHOP',    text:'Mostly teaching, not running machines. Belt tension, thermistors, and someone who has never touched the thing in front of them.' },
+  { name:'SOFTWARE',       text:'Picking what the next person can maintain over what is elegant. The shop tool tracker runs on Power Automate for exactly that reason.' },
+  { name:'TEACHING',       text:'Handing over the thing I had to find sideways. Blocks that resolve down to real code, so a robot moves before anyone writes a line.' },
+  { name:'GAMES',          text:'Constraints, mostly. A Game Boy Advance has no operating system and nowhere to print to, so the tests ship as their own ROM.' },
+];
+---
+<Base title="About — rami" theme="home" current="ABOUT"
+      description="Ramzey Burdette works on the low level: embedded systems, firmware and digital design.">
+  <Hero facet="ABOUT" year="the long version" title="I build the things I didn't have."
+        lead="I work on the low level. Embedded systems, firmware and digital design."
+        note="the homepage says this in four words. this is the rest of it" />
+
+  <Media native maxw={260} src="/media/about/me-wave.jpg"
+         alt="Ramzey Burdette mid-talk, microphone in one hand, the other raised"
+         caption="the only photo of me on the site"
+         copy="Every other page on this site is about a thing I made. This one is the only page where the photo is of me, so it should probably be a real one and not a headshot." />
+
+  <Section label="WHERE THIS STARTS">
+    <p class="t-body">I grew up without much access to any of this, and I didn't know it at the time. You can miss out on something and never find out it existed.</p>
+    <p class="t-body">I got into computers in sixth grade. Building PCs, mostly. Nobody handed me that one, it was science class and working it out myself.</p>
+    <p class="t-body">I didn't write code until I was sixteen, in AP Computer Science Principles. Python, and it was the first time I could make something instead of assembling it.</p>
+    <p class="t-body">So the hardware came about four years before the software did. That is most of why I work at the low level.</p>
+    <p class="t-body">Innovators for Purpose was the way in. That is the thing that actually jumpstarted me.</p>
+    <p class="t-note">nobody sat me down and started any of this</p>
+  </Section>
+
+  <Section label="THE THING I DIDN'T HAVE">
+    <p class="t-body">It was the education. Not a computer and not a part, the education itself. I wish I'd had it younger.</p>
+    <p class="t-body">So that is what I build now, for the people who are that age today.</p>
+    <p class="t-body">Most of what I make now ends up with someone the market skipped.</p>
+  </Section>
+
+  <Section label="WHAT I'D ARGUE ABOUT">
+    <p class="t-body">Bridges between high level and low level language. How you get from something a person can read to something a machine can run, and what gets lost on the way.</p>
+    <p class="t-body">It is the reason the same person wrote a processor from the instruction set and a block palette that middle schoolers use to drive a robot. Those are the same problem from opposite ends.</p>
+    <p class="t-note">i would talk about this forever</p>
+  </Section>
+
+  <Section label="WORKING WITH PEOPLE">
+    <p class="t-body">Most of what I actually do is explaining. I lead a firmware subteam, I teach the shop assistants who run the trainings, and I teach middle schoolers who have never written a line. It is the same job at three altitudes: work out where someone actually is, and start there.</p>
+    <p class="t-body">Running the subteam means goals set with people rather than for them, weekly meetings and 1:1s, and making sure nobody walks into a design review unprepared. Teaching is the same shape. Find what someone can already do, then hand them the smallest next step.</p>
+    <p class="t-body">I ask before I build. The braille feature set came out of two rounds of user interviews, not out of what I thought would be interesting to make.</p>
+  </Section>
+
+  <Divider kind="tape" />
+
+  <Section label="THE SIX FACETS">
+    <p class="t-body">The site sorts everything into six. Here is what each one actually means, which is not always what it sounds like.</p>
+    <dl class="facets">
+      {facets.map((f) => (
+        <div class="facet">
+          <dt><Facet name={f.name} theme={themeOf(f.name)} /></dt>
+          <dd class="t-item facet-text">{f.text}</dd>
+        </div>
+      ))}
+    </dl>
+  </Section>
+</Base>
+
+<style>
+  /* Figma: bordered boxes in two columns, band at the top of each. */
+  .facets { margin:0; }
+  .facet {
+    border:var(--outline) solid var(--ink);
+    padding:16px;
+  }
+  .facet + .facet { margin-top:16px; }
+  .facet dt { margin:0 0 12px; }
+  .facet-text { margin:0; }
+  @media (min-width:64em) {
+    .facets { display:grid; grid-template-columns:1fr 1fr; grid-column-gap:30px; grid-row-gap:30px; }
+    .facet { padding:24px; }
+    .facet + .facet { margin-top:0; }
+  }
+</style>

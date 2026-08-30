@@ -1,0 +1,40 @@
+---
+import Facet from './Facet.astro';
+import { themeOf } from '../data/facets.js';
+const { facet, year, title, lead, tags, repo, note, facetTheme } = Astro.props;
+---
+<header class="hero wrap">
+  <p class="hero-meta">
+    <Facet name={facet} theme={facetTheme || themeOf(facet)} />
+    <span class="t-mono hero-year">{year}</span>
+  </p>
+  <h1 class="t-display">{title}</h1>
+  {lead && <p class="t-body hero-lead">{lead}</p>}
+  {note && <p class="t-note hero-note">{note}</p>}
+  {tags && <p class="t-mono hero-tags">{tags}</p>}
+  {repo && <p class="hero-repo"><a class="btn" href={repo} target="_blank" rel="noopener">VIEW ON GITHUB &nbsp;→</a></p>}
+</header>
+
+<style>
+  .hero { padding-top:40px; padding-bottom:36px; }
+  .hero-meta { margin:0 0 16px; }
+  .hero-year  { margin-left:16px; opacity:.7; vertical-align:middle; }
+  .hero-lead  { margin:18px 0 0; max-width:60ch; }
+  .hero-note  { margin:16px 0 0; color:var(--accent); }
+  .hero-tags  { margin:20px 0 0; opacity:.75; }
+  .hero-repo  { margin:26px 0 0; }
+  .btn {
+    display:inline-block; text-decoration:none; padding:14px 20px;
+    background:var(--accent); color:var(--paper);
+    border:var(--outline) solid var(--ink);
+    box-shadow:var(--shadow-x) var(--shadow-x) 0 var(--ink);
+    font-weight:900; font-size:13px; letter-spacing:.04em;
+  }
+  .btn { transition:box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease); }
+  .btn:hover { box-shadow:2px 2px 0 var(--ink); transform:translate(4px,4px); }
+  @media (min-width:64em) {
+    .hero { padding-top:96px; padding-bottom:80px; }
+    .hero-lead { margin-top:28px; }
+    .btn { padding:22px 38px; font-size:20px; }
+  }
+</style>

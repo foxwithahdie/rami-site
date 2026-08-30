@@ -1,0 +1,73 @@
+---
+// A work reel card, built to the Figma spec:
+//   card   466x392, fill theme/paper, 5px theme/ink border, 9,9 hard shadow
+//   band   full width, 76 tall, fill theme/accent, facet left + year right,
+//          both in theme/paper
+//   body   28/26 padding, title 36, blurb 26, then tags left + OPEN right
+// The active card is 548x442 with a 7px theme/accent border and a 13,13 shadow.
+// A parked page renders as a non-link card saying Coming Soon!, so the
+// reel never ships a dead URL.
+const { facet, year, title, blurb, tags, href, theme, soon } = Astro.props;
+const Tag = soon ? 'div' : 'a';
+---
+<Tag class={soon ? "card is-soon" : "card"} href={soon ? undefined : href} data-theme={theme}>
+  <span class="band">
+    <span class="band-facet t-label">{facet}</span>
+    <span class="band-year t-mono">{year}</span>
+  </span>
+  <span class="body">
+    <span class="top">
+      <span class="title t-card">{title}</span>
+      <span class="blurb t-item">{blurb}</span>
+    </span>
+    <span class="foot">
+      <span class="tags t-mono">{tags}</span>
+      <span class="open t-label">{soon ? "COMING SOON!" : "OPEN →"}</span>
+    </span>
+  </span>
+</Tag>
+
+<style>
+  .card {
+    display:flex; flex-direction:column;
+    text-decoration:none;
+    background:var(--paper); color:var(--ink);
+    border:var(--outline) solid var(--ink);
+    box-shadow:var(--shadow-x) var(--shadow-x) 0 var(--ink);
+    transition:transform var(--dur) var(--ease),
+               box-shadow var(--dur) var(--ease),
+               border-color var(--dur) var(--ease);
+  }
+
+  .band {
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--accent); color:var(--paper);
+    padding:12px 16px;
+  }
+  .band-facet { color:var(--paper); }
+  .band-year  { color:var(--paper); opacity:.9; }
+
+  .body { display:flex; flex-direction:column; flex:1 1 auto; padding:18px 16px 16px; }
+  .top   { display:block; }
+  .title { display:block; }
+  .blurb { display:block; margin-top:10px; }
+  .foot  { display:flex; align-items:baseline; justify-content:space-between; margin-top:auto; padding-top:16px; }
+  .tags  { opacity:.8; }
+  .open  { color:var(--accent); white-space:nowrap; margin-left:14px; }
+
+  /* No script, so "the middle one pops" becomes "the one you are pointing at
+     or have tabbed to pops". Keyboard gets it too via :focus-within. */
+  .is-soon { cursor:default; }
+  .is-soon .band { opacity:.75; }
+  a.card:hover, a.card:focus-within {
+    transform:translateY(-6px) scale(1.02);
+    border-color:var(--accent);
+    box-shadow:calc(var(--shadow-x) + 4px) calc(var(--shadow-x) + 4px) 0 var(--ink);
+  }
+
+  @media (min-width:64em) {
+    .band { padding:20px 26px; }
+    .body { padding:28px 26px 26px; }
+    .blurb { margin-top:14px; }
+  }
+</style>

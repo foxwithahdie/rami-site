@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 650 550">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #71eb71;
+      }
+
+      .cls-2 {
+        fill: #22b14c;
+      }
+
+      .cls-3 {
+        fill: #3cc73c;
+      }
+    </style>
+  </defs>
+  <g id="Layer_12" data-name="Layer 12">
+    <g id="Layer_4" data-name="Layer 4">
+      <g>
+        <rect class="cls-2" x="50" y="25" width="75" height="25"/>
+        <polygon class="cls-2" points="50 0 50 25 25 25 25 125 0 125 0 0 50 0"/>
+        <rect class="cls-2" x="125" y="50" width="50" height="25"/>
+        <rect class="cls-2" x="275" y="150" width="25" height="75"/>
+        <rect class="cls-2" x="25" y="125" width="25" height="50"/>
+        <rect class="cls-2" x="50" y="175" width="25" height="25"/>
+        <rect class="cls-2" x="75" y="200" width="25" height="25"/>
+        <rect class="cls-2" x="250" y="125" width="25" height="25"/>
+        <rect class="cls-2" x="225" y="100" width="25" height="25"/>
+        <rect class="cls-2" x="175" y="75" width="50" height="25"/>
+        <rect class="cls-2" x="150" y="250" width="100" height="25"/>
+        <rect class="cls-2" x="100" y="225" width="50" height="25"/>
+        <rect class="cls-2" x="250" y="225" width="25" height="25"/>
+      </g>
+      <polygon class="cls-1" points="275 150 275 225 250 225 250 250 150 250 150 225 100 225 100 200 75 200 75 175 50 175 50 125 25 125 25 25 50 25 50 50 125 49.96 125 75 175 75 175 100 225 100 225 125 250 125 250 150 275 150"/>
+      <g>
+        <rect class="cls-3" x="200" y="175" width="25" height="25"/>
+        <rect class="cls-3" x="225" y="200" width="25" height="25"/>
+        <rect class="cls-3" x="75" y="100" width="25" height="25"/>
+        <rect class="cls-3" x="150" y="150" width="50" height="25"/>
+        <rect class="cls-3" x="100" y="125" width="50" height="25"/>
+      </g>
+    </g>
+    <g id="Layer_5" data-name="Layer 5">
+      <polygon class="cls-1" points="625 100 625 200 600 200 600 250 550 250 550 275 500 275 500 300 400 300 400 275 350 275 350 200 375 200 375 175 425 175 425 150 500 150 500 125 575 125 575 100 625 100"/>
+      <g>
+        <rect class="cls-3" x="450" y="225" width="25" height="25" transform="translate(925 475) rotate(180)"/>
+        <rect class="cls-3" x="425" y="225" width="25" height="25" transform="translate(875 475) rotate(180)"/>
+        <rect class="cls-3" x="475" y="200" width="50" height="25" transform="translate(1000 425) rotate(180)"/>
+        <rect class="cls-3" x="400" y="250" width="25" height="25" transform="translate(825 525) rotate(180)"/>
+        <rect class="cls-3" x="525" y="175" width="50" height="25" transform="translate(1100 375) rotate(180)"/>
+      </g>
+      <g>
+        <rect class="cls-2" x="325" y="200" width="25" height="75"/>
+        <rect class="cls-2" x="350" y="275" width="50" height="25"/>
+        <rect class="cls-2" x="400" y="300" width="100" height="25"/>
+        <rect class="cls-2" x="500" y="275" width="50" height="25"/>
+        <rect class="cls-2" x="550" y="250" width="50" height="25"/>
+        <rect class="cls-2" x="600" y="200" width="25" height="50"/>
+        <rect class="cls-2" x="500" y="100" width="75" height="25"/>
+        <rect class="cls-2" x="425" y="125" width="75" height="25"/>
+        <rect class="cls-2" x="375" y="150" width="50" height="25"/>
+        <rect class="cls-2" x="350" y="175" width="25" height="25"/>
+        <polygon class="cls-2" points="650 75 650 200 625 200 625 100 575 100 575 75 650 75"/>
+      </g>
+    </g>
+    <g id="Layer_6" data-name="Layer 6">
+      <rect class="cls-2" x="300" y="225" width="25" height="250"/>
+    </g>
+    <g id="Layer_1-2" data-name="Layer 1">
+      <rect class="cls-2" x="75" y="475" width="475" height="25"/>
+      <rect class="cls-2" x="225" y="525" width="250" height="25"/>
+    </g>
+  </g>
+</svg>

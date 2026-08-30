@@ -1,0 +1,142 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Section from '../components/Section.astro';
+import Media from '../components/Media.astro';
+import MediaRow from '../components/MediaRow.astro';
+import ProjectNav from '../components/ProjectNav.astro';
+
+const M = '/media/making';
+const set = (n, label) => ([
+  { src:`${M}/${n}-model.jpg`, alt:`${label}: the finished model in Fusion, grey shaded isometric`, caption:'the model' },
+  { src:`${M}/${n}-cam.jpg`,   alt:`${label}: the same part inside the CAM setup, stock body in yellow`, caption:'setup, stock and toolpaths' },
+  { src:`${M}/${n}-sim.mp4`, webm:`${M}/${n}-sim.webm`, poster:`${M}/${n}-sim-poster.jpg`,
+    alt:`${label}: the machining simulation, colourised by operation`, caption:'the simulation' },
+]);
+---
+<Base title="Making — rami" theme="machined" current="WORK"
+      description="Four parts drawn in Fusion 360 and cut on a Tormach and a ShopBot. Two brass dies and two fan builds.">
+  <Hero facet="CNC" year="2025 — 2026" title="Making" lead="Four parts I drew and cut"
+        note="Two brass dies that have pressed real paper, and two weapons that do not exist."
+        tags="Fusion 360  ·  CAM  ·  Tormach 770M  ·  ShopBot PRSalpha 96-48  ·  brass, marine plywood, MDF" />
+
+  <Section label="MAY'S ANCHOR">
+    <p class="t-body">No dimensions exist for a fictional weapon, so I measured May’s height against the anchor’s in pixels and scaled from the ratio.</p>
+    <p class="t-body">All of the CAD was hand drawn. The manufacturing was the easy part.</p>
+    <p class="t-mono dim">marine plywood  ·  ShopBot PRSalpha 96-48  ·  July 2026  ·  mays-anchor v38</p>
+    <p class="t-note">v38 — I treated Fusion like git</p>
+  </Section>
+  <MediaRow items={set('anchor', "May's anchor")} />
+  <Media src={`${M}/anchor-made.jpg`} ratio="ratio-4x3"
+         alt="The finished anchor cut from marine plywood, laminations visible at every edge"
+         caption="the anchor, cut"
+         copy="Marine plywood on the ShopBot. Every laminate shows at the cut edges." />
+
+  <Section label="MAKERSPACE INSTITUTE DIE">
+    <p class="t-body">A foil stamp die for the Institute. It pressed the notebooks people took home.</p>
+    <p class="t-body">The detail was small enough that most of the work was picking faces by hand, one at a time.</p>
+    <p class="t-mono dim">brass  ·  Tormach 770M  ·  July 2026</p>
+  </Section>
+  <MediaRow items={set('msi-die', 'the Makerspace Institute die')} />
+  <Media flip src={`${M}/msi-die-made.jpg`} ratio="ratio-4x3"
+         alt="The finished brass die, its lettering mirrored, green foil still in the recesses"
+         caption="the die, cut"
+         copy="Brass on the Tormach. The lettering is mirrored so it reads the right way round once it is pressed." />
+
+  <Section label="IDEAS BECOME IMPACT DIE">
+    <p class="t-body">Cut from round bar, so the flat had to be milled before anything could be lettered.</p>
+    <p class="t-body">Getting sharp corners out of a chamfer bit took a strange manoeuvre. It worked. The die pressed the paper at the scratch-robots event.</p>
+    <p class="t-mono dim">brass round stock  ·  Tormach 770M  ·  April 2026  ·  stamp2 v9</p>
+  </Section>
+  <figure class="wrap mark">
+    <img src="/media/ibi/ibi-wordmark.svg" width="1575" height="550"
+         alt="The Ideas Become Impact logo: a pixel sprout beside the words Ideas Become Impact, set in pixel type" />
+    <figcaption class="t-mono dim">the artwork the die presses</figcaption>
+  </figure>
+  <MediaRow items={set('ibi-die', 'the Ideas Become Impact die')} />
+  <Media src={`${M}/ibi-die-made.jpg`} ratio="ratio-4x3"
+         alt="The finished Ideas Become Impact die, pixel lettering milled into the flat top of a round brass bar"
+         caption="the die on round stock"
+         copy="Brass round bar. Only the top face is milled flat and lettered. The half round back is raw stock, not a design decision." />
+
+  <Section label="RENDING SCISSORS">
+    <p class="t-body">I had a reference STL and had to rebuild the whole model in Fusion. A mesh has no edges to build from.</p>
+    <p class="t-body">It was meant to be flip machined. That was too difficult, so the other side of the handle got cut out instead. First large-format job on the ShopBot PRSalpha 96-48.</p>
+    <p class="t-mono dim">MDF  ·  ShopBot PRSalpha 96-48  ·  April 2025  ·  combine v2 v4</p>
+  </Section>
+  <MediaRow items={set('scissors', 'the Rending Scissors')} />
+  <Media flip src={`${M}/scissors-made.jpg`} ratio="ratio-4x3"
+         alt="The finished Rending Scissors cut from MDF, two halves joined at the pivot"
+         caption="the scissors, cut"
+         copy="MDF on the ShopBot. Two halves, joined at the pivot." />
+
+  <Section label="FIFTEEN MONTHS">
+    <p class="t-body">Same machine, same kind of part. The difference is fifteen months.</p>
+    <div class="then-now">
+      <div class="tn">
+        <p class="tn-when t-label">APRIL 2025</p>
+        <div class="tn-body">
+          <p class="t-card tn-what">Rending Scissors</p>
+          <ul class="list">
+            <li class="t-item">started from a reference STL</li>
+            <li class="t-item">first large-format job on the ShopBot PRSalpha 96-48</li>
+            <li class="t-item">flip machining abandoned mid-project</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tn">
+        <p class="tn-when t-label">JULY 2026</p>
+        <div class="tn-body">
+          <p class="t-card tn-what">May's Anchor</p>
+          <ul class="list">
+            <li class="t-item">started from nothing, drawn by eye</li>
+            <li class="t-item">six-operation setup that ran</li>
+            <li class="t-item">the manufacturing was the easy part</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <ProjectNav
+    prev={{ href:'/projects/biplup-run/', facet:'GAMES', title:'biplup-run', blurb:'A game on hardware with no operating system.' }}
+    next={{ href:'/experience/olin-shop/', facet:'IN THE SHOP', title:'Olin Shop', blurb:'Where the Tormach and the ShopBot PRSalpha 96-48 live.' }} />
+
+  <p class="rights wrap t-mono">May is Arc System Works. The Rending Scissors are Trigger. The machining is mine.</p>
+</Base>
+
+<style>
+  .dim { opacity:.7; }
+  .list { list-style:none; margin:12px 0 0; padding:0; }
+  .list > li { position:relative; padding-left:30px; }
+  .list > li + li { margin-top:10px; }
+  .list > li::before {
+    content:""; position:absolute; left:0; top:.62em;
+    width:14px; height:4px; background:var(--accent);
+  }
+  /* Two banded cards: accent band on top, body on the page paper. */
+  .tn { border:var(--outline) solid var(--ink); }
+  .then-now > .tn + .tn { margin-top:20px; }
+  .tn-when { margin:0; padding:12px 16px; background:var(--accent); color:var(--paper); }
+  .tn-body { padding:16px; }
+  .tn-what { margin:0; }
+  .tn .list { margin-top:14px; }
+  .rights { padding-top:10px; padding-bottom:44px; opacity:.7; }
+  @media (min-width:64em) {
+    .then-now { display:grid; grid-template-columns:1fr 1fr; grid-column-gap:30px; }
+    .then-now > .tn + .tn { margin-top:0; }
+    .tn-when { padding:16px 24px; }
+    .tn-body { padding:24px; }
+  }
+
+  /* The logo the die carries. Vector, so it is drawn at whatever width the
+     column gives it; the width/height attributes hold the space before it
+     loads, which is what we have instead of aspect-ratio at the 2017 floor. */
+  .mark { margin:26px 0 0; }
+  .mark img { display:block; width:100%; max-width:340px; height:auto; }
+  .mark figcaption { margin-top:10px; opacity:.75; }
+  @media (min-width:64em) {
+    .mark { margin-top:40px; }
+    .mark img { max-width:420px; }
+  }
+</style>

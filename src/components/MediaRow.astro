@@ -1,0 +1,35 @@
+---
+// Three-up contact sheet for one Making subject: model, CAM setup, simulation.
+// Not two unrelated photos side by side, so Ramzey's rule does not apply here.
+const { items } = Astro.props;
+---
+<div class="row3 wrap">
+  {items.map((it) => (
+    <figure class="cell">
+      <div class="ratio ratio-16x9">
+        {it.poster ? (
+          <video poster={it.poster} autoplay muted loop playsinline preload="none" aria-label={it.alt}>
+            {it.webm && <source src={it.webm} type="video/webm" />}
+            <source src={it.src} type="video/mp4" />
+            <img src={it.poster} alt={it.alt} />
+          </video>
+        ) : (
+          <img src={it.src} alt={it.alt} loading="lazy" decoding="async" />
+        )}
+      </div>
+      <figcaption class="t-mono">{it.caption}</figcaption>
+    </figure>
+  ))}
+</div>
+
+<style>
+  .row3 { padding-top:24px; }
+  .cell { margin:0; }
+  .cell + .cell { margin-top:20px; }
+  .cell .ratio { border:3px solid var(--ink); background:var(--paper); }
+  .cell figcaption { margin-top:8px; opacity:.75; }
+  @media (min-width:64em) {
+    .row3 { padding-top:44px; display:grid; grid-template-columns:repeat(3, 1fr); grid-column-gap:30px; }
+    .cell + .cell { margin-top:0; }
+  }
+</style>
