@@ -49,30 +49,6 @@ worlds match the theme modes in the Figma file: `home`, `processor`, `rehab`,
 Nav and footer never inherit the page theme. They use `--chrome-bg`,
 `--chrome-fg` and `--chrome-accent`, which are constant everywhere.
 
-## The CV page
-
-`src/data/cv.json` is generated from `~/career-ops/cv.md`, which is private and
-carries a phone number, a personal email and a long trail of internal comments.
-`scripts/build-cv.py` strips every HTML comment and the whole contact line, then
-**aborts** if anything on its deny list survives. Re-run it whenever the CV
-changes:
-
-    python3 scripts/build-cv.py
-
-The generated JSON is committed so the site builds without the private repo.
-
-## Media
-
-`public/media/` holds downscaled derivatives, 7.3 MB in total. The originals
-live in `~/projects/portfolio` and total 663 MB, one file of which is 102 MB and
-would be rejected by GitHub outright. **Do not commit originals.**
-
-The four machining simulations are `<video autoplay muted loop playsinline>`
-with MP4 and WebM and a poster image, which needs no script and falls back to
-the poster. They were 25 MB as GIFs and are under 2 MB as video.
-
-## Still open
-
 - Contact address and form endpoint are unset. `SiteFooter.astro` shows a
   placeholder note rather than inventing either.
 - Empty image slots render a labelled dashed box: Braille (2), Ideas Become
