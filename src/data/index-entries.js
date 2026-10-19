@@ -2,8 +2,8 @@
 // means it lives on the CV instead. Copy verbatim from the Figma artboard.
 export const groups = [
   { facet:'FIRMWARE', slug:'firmware', items:[
-    { year:'2026 — now', title:'MagFit Prosthetics', role:'Firmware Lead  ·  Olin College', blurb:'A socket that adjusts itself as a limb changes.', href:'/experience/magfit/' },
-    { year:'2025 — now', title:'Braille E-Reader', soon:true,   role:'Firmware Lead  ·  Olin Assistive Technology Lab', blurb:'Braille without the price tag.', href:'/experience/braille-e-reader/' },
+    { year:'2026 — now', title:'MagFit Prosthetics', soon:true, role:'Firmware Lead  ·  Olin College', blurb:'A socket that adjusts itself as a limb changes.', href:'/experience/magfit/' },
+    { year:'2025 — now', title:'E-Braille Learning Device',   role:'Firmware Lead  ·  Olin Assistive Technology Lab', blurb:'Braille you can afford, and that teaches you to read it.', href:'/experience/e-braille-learning-device/' },
     { year:'2025',       title:'Myo-Amp',            role:'Firmware and Integration Lead  ·  5-person team', blurb:"For people who can't grip after a stroke.", href:'/projects/myo-amp/' },
   ]},
   { facet:'DIGITAL DESIGN', slug:'digital', items:[

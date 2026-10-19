@@ -1,0 +1,105 @@
+---
+import Base from '../../layouts/Base.astro';
+import Hero from '../../components/Hero.astro';
+import Divider from '../../components/Divider.astro';
+import Section from '../../components/Section.astro';
+import Code from '../../components/Code.astro';
+import ProjectNav from '../../components/ProjectNav.astro';
+const features = ['JUMBO BRAILLE','SPEECH TO BRAILLE','AUDIO FEEDBACK','HAPTIC FEEDBACK','DOCUMENT STORAGE','8-12 HR BATTERY','BLUETOOTH','LOADABLE LESSONS','PHYSICAL BUTTONS','PROTECTIVE CASE','LOST DEVICE ALERT','PORTABLE'];
+---
+<Base title="E-Braille Learning Device — rami" theme="tactile" current="WORK"
+      description="A low-cost device that teaches braille as well as displaying it. ESP32-S3 firmware, two-tier SD storage, and coil-driven cells.">
+  <Hero facet="FIRMWARE" year="2025 — now" title="E-Braille Learning Device"
+        lead="A commercial braille display costs thousands of dollars, which prices out most of the people who need one. This one is also meant to teach you to read braille, not just show it to you."
+        tags="ESP32-S3  ·  C++  ·  ESP-IDF  ·  KiCad  ·  shift registers" />
+  <p class="role wrap t-mono">Firmware Lead · Olin Assistive Technology Lab</p>
+  <Divider kind="braille" />
+
+  <Section label="WHAT I LEAD">
+    <p class="t-body">I run the firmware and software team. The work splits into five fronts and I am hands-on in three of them, which in practice means I write some of it and spend the rest of the time making sure four other people are not blocked.</p>
+    <ul class="list">
+      <li class="t-item"><strong>Storage.</strong> Two SD cards, internal and external, holding different things</li>
+      <li class="t-item"><strong>Speech to braille.</strong> Getting spoken words out through the cells</li>
+      <li class="t-item"><strong>Cell actuation.</strong> Coils, cams, and a shift-register-style driver</li>
+      <li class="t-item"><strong>Haptics.</strong> Feedback you feel rather than hear</li>
+      <li class="t-item"><strong>Power.</strong> A battery-management IC and USB-C charging</li>
+    </ul>
+    <p class="t-note">the board is an esp32-s3 and everything above has to fit on it</p>
+  </Section>
+
+  <Section label="TWO SD CARDS">
+    <p class="t-body">There is an internal card and an external one, and they are not interchangeable. The external card is how a lesson gets onto the device; the internal card is where it lives once it is there. That split is most of the design work, because it turns into a pile of questions that all have to agree with each other.</p>
+    <ul class="list">
+      <li class="t-item">How each card is addressed, and where the two differ in practice</li>
+      <li class="t-item">The file structure on each one</li>
+      <li class="t-item">The lesson format: how a lesson is laid out and what metadata rides along with it</li>
+      <li class="t-item">How a lesson gets saved from the external card to the internal one</li>
+      <li class="t-item">Reading the speech model off the internal card instead of holding all of it in flash</li>
+    </ul>
+    <p class="t-body">That last one is the interesting constraint. Flash on an S3 is not big enough to be casual with, so the model has to be something you stream off a card rather than something you link into the binary.</p>
+  </Section>
+
+  <Section label="SPEECH TO BRAILLE">
+    <p class="t-body">You say something, the device writes it in braille. I am helping lead this one, and right now it is a research problem rather than a build problem: we are working out whether a quantized speech-to-text model can run on an S3 at all, and which one.</p>
+    <p class="t-body">Two existing projects are worth the time so far. One is a quantized conformer model built for the S3 specifically. The other wraps a tiny ASR library and its example model holds up well on a laptop microphone, which tells us the floor is high enough to be worth chasing onto the device.</p>
+    <p class="t-note">neither of these is ours. we are reading other people's work to find out what is possible</p>
+  </Section>
+
+  <Section label="HOW A CELL MOVES">
+    <p class="t-body">Each dot is a small electromagnet coil that is either on or off, driven through a shift-register-style arrangement so one data line can address a whole array. Energise a coil and it repels a magnet fixed to a cam. The cam rotates and pushes one braille cell up.</p>
+    <p class="t-body">So the firmware never moves a dot directly. It sets a pattern of coils and the mechanics do the rest, which is the same reason the shift register driver matters as much as it does.</p>
+  </Section>
+
+  <Section label="HELLO">
+    <p class="t-body">Before any of the system design above, the question was simply whether you could drive a cell this way at all. So I wrote concept code to answer it: read a Braille Ready Format file off an SD card, push it through a bit-banged shift register, and see whether the right dots came up.</p>
+    <p class="t-body">The first thing it ever said was hello.</p>
+    <Code code={`std::string file = SD::to_path("/hello.brf");
+std::uint8_t braille_data[MAX_LINE_SIZE];
+ret = SD::read_file(file, braille_data, MAX_LINE_SIZE);
+
+ShiftRegister::configure();
+ShiftRegister::turn_on();
+// HELL06 -> hello!`} />
+    <p class="t-body">The bits came out backwards the first time. The commit that fixed it is called "small fix - put msb to lsb".</p>
+    <p class="t-note">this is proof the method works, not the shipping driver. the real one gets written against the board</p>
+  </Section>
+
+  <Section label="THE PIPELINE WE CUT">
+    <p class="t-body">The summer plan had a firmware-to-software bridge in it: build something that compiles high level code down to work against the low level hardware, Python to C++, so anyone on the team could work on the UI without writing C.</p>
+    <p class="t-body">We dropped it. Two reasons, and the second one is the real one. It was going to cost more time than it saved, and nobody except the leads was ever going to touch the UI anyway, which means the whole audience for an automatic pipeline was about two people. So we prototype the UI in Python and convert it to C by hand when it is settled.</p>
+    <p class="t-note">building the tool would have been more fun than doing it by hand. that is usually the warning sign</p>
+  </Section>
+
+  <Section label="THE SUBTEAM">
+    <p class="t-body">The team turned over for this year and the new members start pushing shortly, so who owns what is still settling. What does not change is the shape of it: a branch per person, and the repo ends up being the org chart.</p>
+    <p class="t-body">Goals and deadlines set with each person, weekly meetings, one-to-one check-ins, and getting everyone ready for design reviews. I run SMT soldering practice for the team as well.</p>
+    <p class="t-body">A good chunk of leading this team is just teaching it. Most people arrive able to write some code and not much else that this project needs, so I teach the stack: C and C++, Git and GitHub, enough Linux to work, C against the ESP-IDF toolchain, hardware fundamentals, and the communication protocols everything talks over.</p>
+    <p class="t-note">you cannot delegate a task to someone who has not been taught the thing yet. that is the job</p>
+    <p class="t-body">Beyond the subteam I sit on the lab's leadership coordination group. That work runs a year out instead of a sprint out: succession planning, recruiting members, and building the onboarding structure for next year.</p>
+  </Section>
+
+
+  <Section label="WHERE IT IS NOW">
+    <p class="t-body">Eight jumbo cells planned. The board is at schematic, nothing is fabricated, and the system design got a lot more specific over the autumn, which is why this page did.</p>
+    <p class="t-body">The team did user research with the Carroll Center for the Blind and Perkins School for the Blind, which is the part that keeps the rest honest.</p>
+    <ul class="chips">{features.map((f) => <li class="chip t-label">{f}</li>)}</ul>
+    <p class="t-body">That feature set came out of two rounds of user interviews rather than a meeting, which is the only reason I trust it. The interviews were the wider team's work, not mine.</p>
+    <p class="t-mono dim">Public repos under Olin-Assistive-Tech-Lab: e-braille-learning-device, and the -firmware, -software, -hardware and -ui repos beside it.</p>
+  </Section>
+
+  <ProjectNav href="/experience/e-braille-learning-device/" />
+</Base>
+
+<style>
+  .role { padding-top:0; opacity:.75; }
+  .list { list-style:none; margin:0; padding:0; }
+  .list > li { position:relative; padding-left:30px; }
+  .list > li + li { margin-top:14px; }
+  .list > li::before {
+    content:""; position:absolute; left:0; top:.62em;
+    width:14px; height:4px; background:var(--accent);
+  }
+  .chips { list-style:none; margin:0; padding:0; display:flex; flex-wrap:wrap; }
+  .chip { margin:0 8px 8px 0; padding:8px 12px; border:3px solid var(--ink); }
+  .dim { opacity:.7; }
+</style>

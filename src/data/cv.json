@@ -28,47 +28,31 @@
   "entries": [
    {
     "org": "OAT Lab (Olin Assistive Technology), Olin College of Engineering, Needham, MA",
-    "meta": "**Firmware Lead** · September 2025 to present",
+    "meta": "**Firmware/Software Lead** · September 2025 to present",
     "bullets": [
+     "Lead the firmware and software team across storage, speech-to-braille conversion, cell actuation, haptics, and power",
+     "Target hardware is an ESP32-S3, with the board built around it",
      "Building a PCB main board from scratch for the device",
-     "Writing C++ firmware for an ESP32-S3 that converts Braille Ready Format (`.brf`) files into actuated braille cells, across a planned 8 jumbo cells driven by electromagnets pushing a cam mechanism",
-     "Handling SD-card local storage, USB data ingest, battery management, and braille cell actuation concurrently on one microcontroller",
-     "Wrote the shift register driver, bit-banged over serial data, shift clock, register clock, and output enable, latching the register once all bits are pushed. The full path runs end to end: mount the card, read the `.brf`, unmount, configure the register, push the cells",
+     "Writing C++ firmware that converts Braille Ready Format (`.brf`) files into actuated braille cells, across a planned 8 jumbo cells",
+     "**Storage, two tiers.** Specifying and building an internal and an external SD card that hold different things: how each is addressed and how the two differ, the on-card file structure, the lesson data format and its metadata, how lessons move from external to internal storage, and how to read the speech model off the internal card instead of holding all of it in flash",
+     "**Speech to braille.** Helping lead the speech-to-text path that drives braille output. Currently evaluating quantized on-device STT models for the ESP32-S3",
+     "**Cell actuation.** Leading part of the effort on a shift-register-style driver for an array of small electromagnet coils switched on and off. An energised coil repels a magnet fixed to a cam, and the cam pushes a single braille cell up",
+     "**Haptic feedback.** Leading part of the team's work on it",
+     "**Power.** Selecting a battery-management IC and charging over USB-C",
+     "Wrote the concept firmware that proved the actuation method works: a bit-banged shift register driver over serial data, shift clock, register clock and output enable, latching once all bits are pushed, with the whole path running end to end from mounting the card and reading the `.brf` through to pushing the cells",
      "Migrated the codebase from C to C++, replacing `#define` pin macros with `constexpr gpio_num_t`, bare 1/0 levels with a typed enum, and the free functions with a `ShiftRegister` class",
      "Drew the shift register logic schematic and a logic board prototype in KiCad, through to fabrication-ready gerbers",
-     "At schematic and component-testing stage as of August 2026",
-     "Lead a 4-person firmware subteam: set individual member goals and deadlines, run weekly subteam meetings and 1:1s, and prepare the team for periodic design reviews",
+     "Lead the firmware subteam, four people last year and a new intake this year: set individual member goals and deadlines, run weekly subteam meetings and one-to-one check-ins, and prepare the team for periodic design reviews",
      "Run SMT soldering practice sessions for the subteam",
+     "Teach the subteam the stack they need to contribute: C and C++, Git and GitHub, Linux basics, C on the ESP-IDF toolchain, hardware fundamentals, and communication protocols",
      "Part of the lab's leadership coordination team, working on succession planning, member recruitment, and onboarding structure for the following year",
-     "Team conducted extensive user research with the Carroll Center for the Blind and Perkins School for the Blind"
+     "Team conducted extensive user research with the Carroll Center for the Blind and Perkins School for the Blind, across two rounds of interviews, and the device's feature set came out of those rather than out of the team's own assumptions"
     ],
-    "summary": "Low-cost braille e-reader. Commercial braille displays run into the thousands of dollars, which prices out most of the people who need them."
-   },
-   {
-    "org": "MagFit Prosthetics, Olin College of Engineering, Needham, MA",
-    "meta": "**Firmware Lead** · June 2026 to present",
-    "bullets": [
-     "Selected the STM32G474CET6 for the final board, chosen because ST's tooling supports training and running ML models on low-power hardware, which keeps all-day battery life viable for someone wearing the device. Development currently targets an STM32L432KC while the final board is in design",
-     "Built a C++ working environment over STM32 HAL-level code for the team",
-     "Designed the firmware around interrupt-driven scheduling with a hard non-blocking rule: every function except initialization must not block, so no subsystem stalls waiting on another",
-     "Implemented force-sensing-resistor handling and scaffolded the remaining subsystems (battery management, Bluetooth, PID control, motor control) plus the communication-standard layer between them",
-     "Wrote a non-blocking printing and logging API when no suitable option existed: formatted output goes into a FreeRTOS stream buffer under a mutex and a background task drains it over UART in interrupt mode",
-     "Built the system on FreeRTOS under CMSIS-RTOS v2, with named tasks, mutexes guarding I2C, ADC and printing, stream buffers, and task notifications for I2C transaction completion",
-     "Converted the device over to USB CDC for host communication",
-     "Wrote an interactive serial console over USB for bring-up, with single-key commands to energize and release the electropermanent magnet, trigger vibration, stop, and print help",
-     "Shipped a general-purpose PID loop as its own reusable module",
-     "Structured the codebase to separate interrupts from device files (I2C vs BMS) and keep hardware abstraction layered, with GPIO bindings attachable to specific functions",
-     "Specified and built the firmware for the concentric cylinder rig used to characterize the MRF: a Raspberry Pi Pico driving a 50:1 geared DC motor through an L298N, with two INA228 current sensors, an ADS1115 for analog torque and Hall-sensor reads, and a digipot setting the buck converter's coil current",
-     "Implemented a closed-loop speed controller that adjusts PWM duty to hold motor speed constant as the fluid stiffens, plus a current loop that trims the digipot until measured coil current hits setpoint, logging torque, both branch currents, speed, and magnetic field together per setpoint over USB",
-     "Identified and resolved mixed-signal integration issues: ADC ceiling mismatch (5 V Hall sensor into a 3.3 V Pico pin), encoder logic level, and star grounding to keep high-current motor and coil returns off the analog and logic ground",
-     "Two-person firmware repo, roughly an even split of commits with the electrical lead",
-     "As of August 2026 the firmware runs ahead of the hardware. The STM32 board is not yet fabricated; testing is against a breadboard signal board"
-    ],
-    "summary": "Adjustable prosthetic socket using magnetorheological fluid (MRF) and electropermanent magnets to conform to a residual limb as it changes volume. Student project working toward becoming a startup."
+    "summary": "Low-cost e-braille **learning** device, not a plain e-reader: it teaches braille as well as displaying it. Commercial braille displays run into the thousands of dollars, which prices out most of the people who need them. Repos, all public: github.com/Olin-Assistive-Tech-Lab/e-braille-learning-device, plus the `-firmware`, `-software`, `-hardware` and `-ui` repos beside it"
    },
    {
     "org": "Olin Shop, Olin College of Engineering, Needham, MA",
-    "meta": "**Shop Assistant** · February 2025 to present  ·  **Summer Fellow** · June 2026 to August 2026",
+    "meta": "**Shop Assistant** · March 2025 to present  ·  **Summer Fellow** · June 2026 to August 2026",
     "bullets": [
      "Ran 75 training sessions: 55 Prusa FDM and 20 soldering",
      "Deliver three scheduled trainings for the Olin community: intro shop training, Prusa FDM, and soldering",
@@ -82,12 +66,12 @@
      "The Prusa training covers PLA and PETG, plus slicing, supports and the shop's printing culture; the Stratasys training, which covers the remaining materials, is delivered by someone else",
      "Collaborated with the assistant team to develop and deliver shop trainings to the Olin community",
      "As Summer Fellow: ideated and managed team tasks for shop improvement, did the hands-on labor, and ran outreach sharing how Olin operates its academic makerspace with people outside the college",
-     "Part of the team that converted Room 303 from the electronics stockroom into the Electronics Engineering Lab (EEL), fit for advanced surface-mount soldering and power electronics analysis, covering layout, design and physical implementation. Consulted the provost and two ECE faculty on how to balance a workspace against a stockroom, then extended the design into the hallway with analysis benches and centralised student storage, keeping ventilated work inside the room",
+     "Part of the team that converted Room 303 from the electronics stockroom into the Electronics Engineering Lab (EEL), fit for advanced surface-mount soldering and power electronics analysis, covering layout, design and physical implementation. Consulted the provost and two electrical engineering faculty on how to balance a workspace against a stockroom, then extended the design into the hallway with analysis benches and centralised student storage, keeping ventilated work inside the room",
      "Led the Electronics Prototyping deep dive at the shop's first Makerspace Institute (July 2026), hosting participants from 12 higher education institutions worldwide through electronics orientation, soldering training, and an Arduino spotlight build, and discussing how those skills integrate into courses like PIE",
      "Wrote `Spotlight.h`, the 255-line Arduino teaching library that session was built on: a non-blocking `update()` engine with plain-language commands (`set_pan`, `tilt_bounce`, `setRGB`) that hide servo timing and PWM so a beginner issues a command instead of computing a pulse width. Servos park after half a second of holding position because cheap servos buzz",
      "Designed the 150-minute session itself: a 17-slide deck budgeted to the minute with talk and question time separated, teaching LEDs on pre-wired pins so students see four behaviours before writing a line of code, then servos, then 40 minutes of soldering from breadboard to perfboard",
      "Cut the custom brass stamp for the Makerspace Institute logo on a Tormach 770M, used with a hot foil press to print notebooks during the event",
-     "Built the Arduino pan-tilt spotlight used as the hands-on build in that workshop (`olin-shop/pan-tilt-spotlight`, C++), and wrote the accompanying electronics workshop slides deck"
+     "Built the Arduino pan-tilt spotlight used as the hands-on build in that workshop (github.com/olin-shop/pan-tilt-spotlight, C++), and wrote the accompanying electronics workshop slides deck"
     ],
     "summary": ""
    },
@@ -104,11 +88,21 @@
     "summary": ""
    },
    {
+    "org": "Peer Tutor, Olin College of Engineering, Needham, MA",
+    "meta": "**Software Design** · February 2025 to May 2025",
+    "bullets": [
+     "Tutored 3 students regularly through Software Design, meeting one to one and with whole project teams",
+     "Worked through assignments and projects with them, consulted on project ideas and how to structure a project, and re-taught concepts from class that had not landed the first time",
+     "Tutored the course a year before returning to it as a course assistant in Spring 2026"
+    ],
+    "summary": ""
+   },
+   {
     "org": "Software Engineering Practices and Tools Research, Olin College of Engineering",
     "meta": "**Student Researcher** · January 2025 to March 2026",
     "bullets": [
      "Interviewed mechanical engineers on their use of software engineering practices and tools (SEPTs) to understand where their usage patterns originate",
-     "Gathered data across 10 to 15 interviews on SEPT usage and perceived importance relative to industry norms",
+     "Gathered data across 4 published interviews on SEPT usage and perceived importance relative to industry norms",
      "Found that curriculum has the largest effect on an engineer's ability to use SEPTs and on their perception of their value",
      "Performed interview coding and analysis on the qualitative data set",
      "Named co-author on the resulting SIGCSE TS 2026 paper (see Publications)"
@@ -173,6 +167,29 @@
   "intro": [],
   "entries": [
    {
+    "org": "MagFit Prosthetics, Olin College of Engineering, Needham, MA",
+    "meta": "*July 2026 to present* · **Firmware Lead**",
+    "bullets": [
+     "Selected the STM32G474CET6 for the final board, chosen because ST's tooling supports training and running ML models on low-power hardware, which keeps all-day battery life viable for someone wearing the device. Development currently targets an STM32L432KC while the final board is in design",
+     "Built a C++ working environment over STM32 HAL-level code for the team",
+     "Designed the firmware around interrupt-driven scheduling with a hard non-blocking rule: every function except initialization must not block, so no subsystem stalls waiting on another",
+     "Implemented force-sensing-resistor handling and scaffolded the remaining subsystems (battery management, Bluetooth, PID control, motor control) plus the communication-standard layer between them",
+     "Wrote a non-blocking printing and logging API when no suitable option existed: formatted output goes into a FreeRTOS stream buffer under a mutex and a background task drains it over UART in interrupt mode",
+     "Built the system on FreeRTOS under CMSIS-RTOS v2, with named tasks, mutexes guarding I2C, ADC and printing, stream buffers, and task notifications for I2C transaction completion",
+     "Converted the device over to USB CDC for host communication",
+     "Wrote an interactive serial console over USB for bring-up, with single-key commands to energize and release the electropermanent magnet, trigger vibration, stop, and print help",
+     "Shipped a general-purpose PID loop as its own reusable module",
+     "Structured the codebase to separate interrupts from device files (I2C vs BMS) and keep hardware abstraction layered, with GPIO bindings attachable to specific functions",
+     "Specified and built the firmware for the concentric cylinder rig used to characterize the MRF: a Raspberry Pi Pico driving a 50:1 geared DC motor through an L298N, with two INA228 current sensors, an ADS1115 for analog torque and Hall-sensor reads, and a digipot setting the buck converter's coil current",
+     "Implemented a closed-loop speed controller that adjusts PWM duty to hold motor speed constant as the fluid stiffens, plus a current loop that trims the digipot until measured coil current hits setpoint, logging torque, both branch currents, speed, and magnetic field together per setpoint over USB",
+     "Identified and resolved mixed-signal integration issues: ADC ceiling mismatch (5 V Hall sensor into a 3.3 V Pico pin), encoder logic level, and star grounding to keep high-current motor and coil returns off the analog and logic ground",
+     "Two-person firmware repo, roughly an even split of commits with the electrical lead",
+     "As of August 2026 the firmware ran ahead of the hardware. The STM32 board was not fabricated; testing was against a breadboard signal board",
+     "**Paused as of October 2026.** Firmware work resumes next semester. The entry stays on the CV and in Projects; only the portfolio page is parked"
+    ],
+    "summary": "Adjustable prosthetic socket using magnetorheological fluid (MRF) and electropermanent magnets to conform to a residual limb as it changes volume. Student project working toward becoming a startup."
+   },
+   {
     "org": "RV32I RISC-V Processor, SystemVerilog",
     "meta": "*Fall 2025, Computer Architecture* · github.com/foxwithahdie/rv32i-riscv-processor",
     "bullets": [
@@ -221,17 +238,6 @@
     "summary": ""
    },
    {
-    "org": "VoiceXP, Raspberry Pi Voice Assistant",
-    "meta": "*2023 to 2024, Innovators for Purpose* · sole author, 18 of 18 commits",
-    "bullets": [
-     "Voice-controlled chatbot running on a Raspberry Pi, in Python: speech recognition, text to speech, a keyword management layer, and voice calibration",
-     "Moved the recognition backend off pocket-sphinx and spent most of the effort on microphone behavior and background noise rejection in real rooms",
-     "Packaged for macOS, Linux, and Windows with `setup.py` and an install script, and resolved ARM build issues that only appeared on the Pi itself",
-     "Built on SpeechRecognition, pyttsx3, pyaudio, and the OpenAI API"
-    ],
-    "summary": ""
-   },
-   {
     "org": "biplup-run, GBA Endless Runner",
     "meta": "*Spring 2025, Software Systems* · github.com/olincollege/biplup-run",
     "bullets": [
@@ -251,12 +257,12 @@
   "title": "Skills",
   "intro": [
    "**Programming Languages:** C, C++, Python, SystemVerilog, MATLAB, LaTeX *Familiar, limited recent practice:* Java, Kotlin",
-   "**Embedded and Hardware:** ESP32-S3 · STM32 (G4 and L4 series, HAL) · Raspberry Pi Pico and RP2040 · Arduino · GBA and ARM cross-compilation · FreeRTOS under CMSIS-RTOS v2 (tasks, mutexes, stream buffers, task notifications) · interrupt-driven, non-blocking firmware architecture · I2C, PWM, GPIO, UART, USB CDC, quadrature encoders · shift registers and bit-banged protocols · FSRs, Hall sensors, current sensing (INA228), external ADC (ADS1115), digipots · motor drivers (L298N) · battery management · board bring-up",
+   "**Embedded and Hardware:** ESP32-S3 (ESP-IDF) · STM32 F4, G4 and L4 series (HAL) · RP2040 and Raspberry Pi Pico · GBA and ARM cross-compilation · FreeRTOS under CMSIS-RTOS v2 (tasks, mutexes, stream buffers, task notifications) · interrupt-driven, non-blocking firmware architecture · I2C, SPI, UART, PWM, USB CDC · shift registers and bit-banged protocols · SD-card storage and on-device file structure · motor control and closed-loop PID · battery management and USB-C charging · board bring-up",
    "**Digital Design:** RV32I RISC-V ISA implementation · SystemVerilog · GTKWave waveform debug · testbench development",
    "**Electrical:** KiCad schematic capture and PCB layout · analog and digital circuit design · power distribution and regulation · star grounding and mixed-signal integration",
    "**Fabrication and CAD/CAM:** Fusion 360 · CNC machining on the Tormach 770M and large-format ShopBot PRSalpha 96-48 · CAM programming and toolpath strategy · brass, marine plywood, and MDF · SMT and through-hole soldering · Prusa FDM and Formlabs SLA 3D printing, including advanced slicing · shop fabrication",
    "**Web and Backend:** Flask · Quart · asyncio · Express and EJS · React and Next.js · SQLite · Power Automate",
-   "**Tools:** Git · GitHub · Linux · Make · Meson · Ninja · Poetry · pytest · ESP-IDF · STM32CubeMX · JetBrains (CLion, IntelliJ IDEA) · Adobe Illustrator · Docker (basic)"
+   "**Tools:** Git · Linux · Make · Meson · Ninja · Poetry · pytest · ESP-IDF · STM32CubeMX · JetBrains (CLion, IntelliJ IDEA) · Adobe Illustrator · Docker (basic)"
   ],
   "entries": []
  }

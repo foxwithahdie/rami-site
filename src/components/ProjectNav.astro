@@ -1,28 +1,65 @@
 ---
 import Facet from './Facet.astro';
 import { themeOf } from '../data/facets.js';
-import { themeForHref } from '../data/routes.js';
+import { themeForHref, isLive, neighbours } from '../data/routes.js';
 // Each card is painted in the world of the page it goes TO, not the page it
 // sits on. Same rule as the Figma nav cards, which carry an explicit variable
 // mode for their destination.
-const { prev, next } = Astro.props;
+// Pass `href` (this page's own route) and the cards are derived from
+// workRing in routes.js, which is circular and skips parked pages. Explicit
+// prev/next still override, for a one-off.
+const { href, prev: prevProp, next: nextProp } = Astro.props;
+const ring = href ? neighbours(href) : { prev: null, next: null };
+const prev = prevProp ?? ring.prev;
+const next = nextProp ?? ring.next;
+// A nav card pointing at a page parked in _wip/ must NOT be a link, exactly as
+// WorkCard already does on the home and work pages. Before this, ProjectNav
+// emitted a plain <a> whichever way `parked` was set, so parking a page left
+// every nav card pointing at it as a 404. Found 2026-10-19 while parking
+// MagFit: three live pages linked to it through this component.
+const liveP = prev && isLive(prev.href);
+const liveN = next && isLive(next.href);
 ---
 <nav class="pnav wrap" aria-label="Other work">
   {prev && (
-    <a class="pnav-item" href={prev.href} data-theme={prev.theme || themeForHref(prev.href)}>
-      <span class="t-label pnav-dir">← PREVIOUS</span>
-      <Facet name={prev.facet} theme={themeOf(prev.facet)} />
-      <span class="t-card pnav-title">{prev.title}</span>
-      <span class="t-item pnav-blurb">{prev.blurb}</span>
-    </a>
+    <Fragment>
+      {liveP ? (
+        <a class="pnav-item" href={prev.href} data-theme={prev.theme || themeForHref(prev.href)}>
+          <span class="t-label pnav-dir">← PREVIOUS</span>
+          <Facet name={prev.facet} theme={themeOf(prev.facet)} />
+          <span class="t-card pnav-title">{prev.title}</span>
+          <span class="t-item pnav-blurb">{prev.blurb}</span>
+        </a>
+      ) : (
+        <div class="pnav-item is-soon" data-theme={prev.theme || themeForHref(prev.href)}>
+          <span class="t-label pnav-dir">← PREVIOUS</span>
+          <Facet name={prev.facet} theme={themeOf(prev.facet)} />
+          <span class="t-card pnav-title">{prev.title}</span>
+          <span class="t-item pnav-blurb">{prev.blurb}</span>
+          <span class="t-label pnav-soon">COMING SOON!</span>
+        </div>
+      )}
+    </Fragment>
   )}
   {next && (
-    <a class="pnav-item is-next" href={next.href} data-theme={next.theme || themeForHref(next.href)}>
-      <span class="t-label pnav-dir">NEXT →</span>
-      <Facet name={next.facet} theme={themeOf(next.facet)} />
-      <span class="t-card pnav-title">{next.title}</span>
-      <span class="t-item pnav-blurb">{next.blurb}</span>
-    </a>
+    <Fragment>
+      {liveN ? (
+        <a class="pnav-item is-next" href={next.href} data-theme={next.theme || themeForHref(next.href)}>
+          <span class="t-label pnav-dir">NEXT →</span>
+          <Facet name={next.facet} theme={themeOf(next.facet)} />
+          <span class="t-card pnav-title">{next.title}</span>
+          <span class="t-item pnav-blurb">{next.blurb}</span>
+        </a>
+      ) : (
+        <div class="pnav-item is-next is-soon" data-theme={next.theme || themeForHref(next.href)}>
+          <span class="t-label pnav-dir">NEXT →</span>
+          <Facet name={next.facet} theme={themeOf(next.facet)} />
+          <span class="t-card pnav-title">{next.title}</span>
+          <span class="t-item pnav-blurb">{next.blurb}</span>
+          <span class="t-label pnav-soon">COMING SOON!</span>
+        </div>
+      )}
+    </Fragment>
   )}
 </nav>
 
@@ -41,6 +78,9 @@ const { prev, next } = Astro.props;
   .pnav-title { display:block; margin-top:6px; }
   .pnav-blurb { display:block; margin-top:8px; }
   .is-next { text-align:right; }
+  .is-soon { cursor:default; }
+  .is-soon:hover { box-shadow:var(--shadow-x) var(--shadow-x) 0 var(--ink); transform:none; }
+  .pnav-soon { display:block; margin-top:14px; color:var(--accent); }
   @media (min-width:64em) {
     .pnav { padding-top:90px; padding-bottom:90px; display:grid; grid-template-columns:1fr 1fr; grid-column-gap:40px; }
     .pnav-item + .pnav-item { margin-top:0; }

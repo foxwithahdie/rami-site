@@ -18,7 +18,17 @@ const esc = (s) => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&g
 const md  = (s) => esc(s)
   .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
   .replace(/\*(.+?)\*/g, '<em>$1</em>')
-  .replace(/`(.+?)`/g, '<code>$1</code>');
+  .replace(/`(.+?)`/g, '<code>$1</code>')
+  // Bare repo and site hosts in cv.md become real links. Peer review,
+  // 2026-10-19: "I would like if there were links to githubs Repos on your CV,
+  // so I could check out individual projects without going through extra
+  // pages/friction." They were rendering as dead plain text.
+  // Runs AFTER escaping, so the pattern only ever sees sanitised input, and
+  // the character class excludes the markup the earlier rules emit.
+  .replace(
+    /\b((?:github\.com|[\w-]+\.github\.io)\/[A-Za-z0-9._\/-]*[A-Za-z0-9_-])/g,
+    '<a class="lnk" href="https://$1" target="_blank" rel="noopener">$1</a>'
+  );
 const flat  = cv.filter(s => s.entries.length === 0);
 const listed = cv.filter(s => s.entries.length > 0);
 ---
@@ -123,6 +133,11 @@ const listed = cv.filter(s => s.entries.length > 0);
     content:""; position:absolute; left:0; top:.62em;
     width:12px; height:4px; background:var(--accent);
   }
+  /* Repo links in the CV rows. Underlined so they read as links on a page
+     that is otherwise deliberately flat. */
+  .lnk { color:var(--accent); text-decoration:underline; text-underline-offset:3px; }
+  .lnk:hover { text-decoration-thickness:3px; }
+
   code { font-family:"JetBrains Mono", Menlo, Consolas, monospace; font-size:.9em; }
 
   .dl { padding-top:6px; padding-bottom:10px; }
